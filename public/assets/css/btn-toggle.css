@@ -1,0 +1,233 @@
+/* .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin: 9px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #52c944;
+    -webkit-transition: .4s;
+    transition: .4s cubic-bezier(0, 1, 0.5, 1);
+    border-radius: 4px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s cubic-bezier(0, 1, 0.5, 1);
+    border-radius: 3px;
+}
+
+.slider:after {
+    position: absolute;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f007";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s cubic-bezier(0, 1, 0.5, 1);
+    border-radius: 3px;
+}
+
+input:checked+.slider {
+    background-color: #52c944;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 4px #93a391;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+} */
+
+
+/* .checkbox label .toggle,
+.checkbox-inline .toggle {
+    margin-left: -20px;
+    margin-right: 5px
+}
+
+.toggle {
+    position: relative;
+    overflow: hidden
+}
+
+.toggle input[type=checkbox] {
+    display: none
+}
+
+.toggle-group {
+    position: absolute;
+    width: 200%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transition: left .35s;
+    -webkit-transition: left .35s;
+    -moz-user-select: none;
+    -webkit-user-select: none
+}
+
+.toggle.off .toggle-group {
+    left: -100%
+}
+
+.toggle-on {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 50%;
+    margin: 0;
+    border: 0;
+    border-radius: 0
+}
+
+.toggle-off {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0
+}
+
+.toggle-handle {
+    position: relative;
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 100%;
+    width: 0;
+    border-width: 0 1px
+}
+
+.toggle.btn {
+    min-width: 59px;
+    min-height: 34px
+}
+
+.toggle-on.btn {
+    padding-right: 24px
+}
+
+.toggle-off.btn {
+    padding-left: 24px
+}
+
+.toggle.btn-lg {
+    min-width: 79px;
+    min-height: 45px
+}
+
+.toggle-on.btn-lg {
+    padding-right: 31px
+}
+
+.toggle-off.btn-lg {
+    padding-left: 31px
+}
+
+.toggle-handle.btn-lg {
+    width: 40px
+}
+
+.toggle.btn-sm {
+    min-width: 50px;
+    min-height: 30px
+}
+
+.toggle-on.btn-sm {
+    padding-right: 20px
+}
+
+.toggle-off.btn-sm {
+    padding-left: 20px
+}
+
+.toggle.btn-xs {
+    min-width: 35px;
+    min-height: 22px
+}
+
+.toggle-on.btn-xs {
+    padding-right: 12px
+}
+
+.toggle-off.btn-xs {
+    padding-left: 12px
+} */
+
+.label {
+    background-color: #c9302c;
+    display: flex;
+    height: 30px;
+    width: 50px;
+    align-items: center;
+    border-radius: .3em;
+    justify-content: space-between;
+    position: relative;
+}
+
+.checkbox {
+    opacity: 0;
+    position: absolute;
+}
+
+.ball {
+    background-color: #fff;
+    height: 27px;
+    width: 15px;
+    position: absolute;
+    top: 1;
+    left: 2px;
+    border-radius: 20%;
+    transition: transform 0.2s linear;
+}
+
+.checkbox:checked+.label .ball {
+    transform: translateX(2em);
+}
+
+.checkbox:checked+.label {
+    background-color: #00a65a;
+}
+
+.fa-check-circle {
+    color: white;
+    margin-left: 10px;
+}
+
+.fa-ban {
+    color: white;
+    margin-left: 25px;
+}

@@ -1,0 +1,10 @@
+{
+    "School": true,
+    "Authentication": true,
+    "Registration": true,
+    "Configuration": true,
+    "Location": true,
+    "Accounts": true,
+    "Model": true,
+    "CategoryItem": true
+}

@@ -1,0 +1,47 @@
+.container {
+    margin: 10px;
+    font-family: "sans-pro";
+    
+}
+@font-face {
+    font-family: sans-pro;
+    src: url('../../fonts/SourceSansPro-Regular.ttf');
+    }
+
+@media print {
+    @page { margin: 0; }
+
+    body {
+        /*margin: 0 10mm;  margin you want for the content */
+       
+        margin: 0.1cm !important;
+    }
+    td,
+    th {
+        padding: 2px;
+        text-align: center;
+    }
+
+    .container {
+        margin: 10px;
+        font-family: "sans-pro";
+        font-size: 96px;
+        
+    }
+    html, body {
+        -webkit-print-color-adjust: exact;
+        background-color: #FFFFFF;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+        height:100vh;
+        padding: 0 !important;
+        display: block;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        font-size:1.2rem;
+
+        /* margin: 10px;  this affects the margin on the html before sending to printer */
+    }
+   
+   
+}
+
