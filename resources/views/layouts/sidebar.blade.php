@@ -195,6 +195,11 @@
                                                     <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee Structure Settings </span>
                                                 </a>
                                             </li> 
+                                            <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_reminder_settings' ? 'active' : '' }} ">
+                                                <a href="{{ route('accounts.fee_reminder.settings') }}">
+                                                    <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee Reminder Settings </span>
+                                                </a>
+                                            </li> 
             
                                             </ul>
                                         </li>                          

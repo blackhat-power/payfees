@@ -25,6 +25,9 @@ class PaymentSettingsController extends Controller
             $data['school_details'] =$school= AccountSchoolDetail::select('account_school_details.*')->first();
             $data['contacts'] = Contact::where('contactable_type',AccountSchoolDetail::class)->where('contactable_id',$school->id)->get(); 
             $data['semesters'] = Semester::all();
+
+            // return ''.env('LANDLORD_DB_DATABASE').'';
+
             $data['currencies']= DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.currencies');
               
               $data['classes'] = AccountSchoolDetailClass::all();
@@ -88,6 +91,9 @@ class PaymentSettingsController extends Controller
             $data['classes'] = AccountSchoolDetailClass::all();
             $data['school_id'] = $school->id;
             $data['fee_groups'] = FeeTypeGroup::all();
+            $data['parent_groups'] = $response =  FeeTypeGroup::where('parent_id',NULL)->get();
+            // return $response;
+
             // $data['active'] = 'fee_structure';
             $data['academic_years'] = AccountSchoolDetailSeason::all();
             $data['activeLink']='account_fee_settings';

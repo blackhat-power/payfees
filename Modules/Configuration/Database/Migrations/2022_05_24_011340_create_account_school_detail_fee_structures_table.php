@@ -18,7 +18,7 @@ class CreateAccountSchoolDetailFeeStructuresTable extends Migration
                 $table->id();
                 $table->foreignId('account_school_details_class_id')->constrained('account_school_detail_classes')
                 ->index('class_id');
-                $table->foreignId('fee_group_id')->constrained('payfeetz_landlord.fee_groups')
+                $table->foreignId('fee_group_id')->constrained(''.env('LANDLORD_DB_DATABASE').'.fee_groups')
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
                 $table->foreignId('created_by')->constrained('users')

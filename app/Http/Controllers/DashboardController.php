@@ -36,8 +36,8 @@ class DashboardController extends Controller
 
 
        $data['activeLink'] = 'super_admin_dashboard';
-       $data['schools'] = DB::table('payfeetz_landlord.tenants')->where('payfeetz_landlord.tenants.database','!=','payfeetz_landlord')->get();
-       $data['school_count'] = DB::table('payfeetz_landlord.tenants')->where('payfeetz_landlord.tenants.database','!=','payfeetz_landlord')->count();
+       $data['schools'] = DB::table('payfees_landlord.tenants')->where('payfees_landlord.tenants.database','!=','payfees_landlord')->get();
+       $data['school_count'] = DB::table('payfees_landlord.tenants')->where('payfees_landlord.tenants.database','!=','payfees_landlord')->count();
 
         return view('dashboard.super_admin_dashboard')->with($data);
 

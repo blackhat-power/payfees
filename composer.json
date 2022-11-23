@@ -18,6 +18,8 @@
         "php-flasher/flasher-toastr-laravel": "^1.6",
         "phpoffice/phpspreadsheet": "^1.23",
         "realrashid/sweet-alert": "^5.1",
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-multitenancy": "^1.0",
         "spatie/laravel-permission": "^5.5",
         "yajra/laravel-datatables-oracle": "^9.20",
         "yoeunes/toastr": "^2.0"

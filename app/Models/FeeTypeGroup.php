@@ -12,6 +12,7 @@ class FeeTypeGroup extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'parent_id'
     ];
 }

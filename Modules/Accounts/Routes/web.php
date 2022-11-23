@@ -119,6 +119,19 @@ Route::middleware(['tenant','auth'])->group(function() {
        Route::get('accounts-ledgers-list/form', [AccountsController::class,'accountLedgerForm'])->name('accounts.ledgers.form');
        Route::get('accounts-ledgers-list/print', [AccountsController::class, 'ledgerprinting'])->name('accounts.ledgers.printouts');
 
+
+
+       /* FEE REMINDER SETTINGS */
+       
+       Route::get('fee-reminder-index', [AccountsController::class,'feeReminderIndex'])->name('accounts.fee_reminder.settings');  
+       Route::post('fee-reminder/store', [AccountsController::class,'feeReminderStore'])->name('accounts.fee_reminder.store');
+       Route::get('fee-reminder/datatable', [AccountsController::class,'feeReminderDatatable'])->name('accounts.fee_reminder.datatable');
+       Route::get('fee-reminder/create', [AccountsController::class,'feeReminderCreate'])->name('accounts.fee_reminder.create');
+
+
+
+
+
        /* COLLECTION */
 
        Route::get('collection/index', [AccountsController::class, 'collectionIndex'])->name('accounts.collection.index');

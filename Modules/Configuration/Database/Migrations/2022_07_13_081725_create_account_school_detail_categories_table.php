@@ -15,7 +15,7 @@ class CreateAccountSchoolDetailCategoriesTable extends Migration
     {
         Schema::create('account_school_detail_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained('payfeetz_landlord.categories')
+            $table->foreignId('category_id')->constrained(''.env('LANDLORD_DB_DATABASE').'.categories')
                     ->onDelete('RESTRICT')
                     ->onUpdate('CASCADE');
             $table->foreignId('school_id')->constrained('account_school_details')
