@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,14 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         // return 'jia';
+
+
+        // $user = User::where(['username'=>'payfees_shaaban_robert'])->get();
+        // return response(['user'=>$user, 'password'=> Hash::check($value, $hashedValue) bcrypt(123456)]);
+       
+    //    $a = bcrypt(123456);
+    //    return $a;
+
         $request->authenticate();
 
         $request->session()->regenerate();

@@ -14,8 +14,8 @@ class FeeReminderSetting extends Model
         'bill_category_id',
         'semester',
         'amount',
-        'count',
         'class_id',
+        'counter',
         'academic_year_id',
         'period_btn_reminders'
     ];
@@ -25,10 +25,10 @@ class FeeReminderSetting extends Model
         return $this->belongsTo(Semester::class);
     }
 
-    public function getSemesterAttribute(){
+    // public function getSemesterAttribute(){
 
-        return $this->semester();
-    }
+    //     return $this->semester();
+    // }
     
     protected static function newFactory()
     {

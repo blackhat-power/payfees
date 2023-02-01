@@ -20,8 +20,6 @@
 
 
 @section('content-body')
-<div class="container">
-    
 
     <div class="modal" tabindex="-1" role="dialog" id="fee_reminder_modal">
         <div class="modal-dialog" role="document">
@@ -36,7 +34,7 @@
               <form action="#" id="fee_reminder">
                  @csrf
                  <div class="row">
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <div class="form-group">
                             <input type="hidden" name="action" value="create">
                            <label for="">Class</label>
@@ -47,8 +45,8 @@
                               @endforeach
                            </select>
                         </div>
-                     </div>
-                     <div class="col-md-6">
+                     </div> --}}
+                     {{-- <div class="col-md-6">
                         <div class="form-group">
                             <input type="hidden" name="action" value="create">
                            <label for="">Academic Year</label>
@@ -59,11 +57,11 @@
                           @endforeach
                            </select>
                         </div>
-                     </div>
+                     </div> --}}
                     <div class="col-md-12">
                         <div class="form-group">
                             <input type="hidden" name="action" value="create">
-                           <label for="">Bill Category</label>
+                           <label for="">Fee Template</label>
                            <select type="text" name="category_id" id="bill_category" class="form-control form-control-sm">
                               <option value=""></option>
                               @foreach ($bill_categories as $category )
@@ -73,7 +71,17 @@
                            </select>
                         </div>
                      </div>
-                    <div class="col-md-12">
+
+                     <div class="col-md-12">
+                       <div class="form-group">
+                           <input type="hidden" name="action" value="create">
+                          <label for="">Fee Collection Name</label>
+                          <input type="text" name="fee_collection_name" class="form-control form-control-sm">
+                       </div>
+                    </div>
+
+
+                    {{-- <div class="col-md-12">
                        <div class="form-group">
                            <input type="hidden" name="action" value="create">
                           <label for="">Semester</label>
@@ -85,14 +93,29 @@
                              
                           </select>
                        </div>
-                    </div>
-                    <div class="col-md-12">
+                    </div> --}}
+                    {{-- <div class="col-md-12">
                        <div class="form-group">
                            <input type="hidden" name="action" value="create">
                           <label for="">Amount</label>
                           <input type="text" name="amount" class="amount form-control form-control-sm">
                        </div>
-                    </div>
+                    </div> --}}
+
+                    <div class="col-md-6">
+                     <div class="form-group">
+                        <label for=""> Start Date </label>
+                        <input name="start_date" type="date" class="form-control form-control-sm">
+                     </div>
+                  </div>
+
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for=""> Due Date </label>
+                        <input name="end_date" type="date" class="form-control form-control-sm">
+                     </div>
+                  </div>
+
                     <div class="col-md-12">
                        <div class="form-group">
                           <label for=""> Counter </label>
@@ -137,12 +160,12 @@
                 <table style="width: 100%" id="fee_reminder_setting">
                     <thead>
                        <tr>
-                        <th style="width: 2% !important;">Code</th>
-                          <th>N0</th>
+                          <th>Bill Category</th>
                           <th>Semister</th>
                           <th>Amount</th>
                           <th>Counter</th>
                           <th>Period Between Reminders</th>
+                          <th>Action</th>
                        </tr>
                     </thead>
              
@@ -153,7 +176,6 @@
     </div>
  </div>
 
-</div>
 
  @endsection
 
@@ -161,7 +183,7 @@
  @section('scripts')
 
  var fee_reminder_table = $('#fee_reminder_setting').DataTable({
-    processing: false,
+   processing: false,
    serverSide: true,
     ajax:{
         url : '{{ route('accounts.fee_reminder.datatable') }}',
@@ -174,16 +196,18 @@
     },
 
     columns:[
-       {data: 'id', name:'id'},
+        {data: 'bill_category_id', name:'bill_category_id'},
        {data: 'semester', name:'semester'},
        {data: 'amount', name:'amount'},
        {data: 'counter', name:'counter'},
        {data: 'period_btn_reminders', name:'period_btn_reminder'},
+       {data: 'action', name:'action'},
    ],
+{{-- 
    "columnDefs": [ { className: " text-right font-weight-bold", "targets": [ 3 ] } ],
   "drawCallback":function(){},
   "footerCallback": function ( ) {},
-   
+    --}}
  });
 
  $('.amount').keyup(function(event){

@@ -190,10 +190,15 @@
                                                 </a>
                                         </li>
 
-                                            <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'account_fee_settings' ? 'active' : '' }} ">
+                                            <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_master'/* 'account_fee_settings' */ ? 'active' : '' }} ">
                                                 <a href="{{ route('accounts.fee_structure.settings') }}">
+                                                    <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee xxx </span>
+                                                </a>
+
+                                                <a href="{{ route('accounts.school.fee.structure.master') }}">
                                                     <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee Structure Settings </span>
                                                 </a>
+                                                
                                             </li> 
                                             <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_reminder_settings' ? 'active' : '' }} ">
                                                 <a href="{{ route('accounts.fee_reminder.settings') }}">
@@ -399,7 +404,13 @@
                                     </li>
 
                                 </ul>
-                            </li>  
+                            </li> 
+                            
+                            <li style="background-color: #d3d3d3 !important;" class=" {{ $activeLink == 'transport' ? 'active' : '' }}">
+                                <a href="{{ route('configurations.school.transport') }}">
+                                    <i style="background-color: unset !important; font-size:8px" class="fa fa-circle"></i><span> Transport </span>
+                                </a>
+                        </li>
 
 
                             <li class="" style="background-color: #d3d3d3 !important;">

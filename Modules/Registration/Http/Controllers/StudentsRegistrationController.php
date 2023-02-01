@@ -47,6 +47,17 @@ class StudentsRegistrationController extends Controller
         
     }
 
+    public function registrationPortal(Request $request){
+
+        $data['streams'] = AccountSchoolDetailStream::select(['name','id'])->groupBy(['name'])->get(); 
+       $data['classes'] = AccountSchoolDetailClass::select(['name','id'])->groupBy(['name'])->get();   
+     
+        $data['activeLink']='student';
+        return view('registration::student.registration_wizard')->with($data);
+
+
+    }
+
  
 
     public function studentsStore(Request $request){
@@ -339,11 +350,7 @@ class StudentsRegistrationController extends Controller
         
         $writer->save('php://output');	// download file 
 
-    } 
-
-
-
-
+    }
 
     public function studentsDatatable(Request $request){
         
@@ -368,8 +375,8 @@ class StudentsRegistrationController extends Controller
         ->addColumn('avatar',  function($student){
 
             $url= asset('storage/student_profile_pics/'.$student->profile_pic);
-            return '<img src="'.$url.'" height="45" width:"45" style="border-radius:50%;
-            display: table;" >';
+            return '<img src="'.$url.'" height="50" width="50" style="border-radius:50%;  object-fit: cover;
+         " >';
             
 
         })

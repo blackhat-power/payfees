@@ -11,6 +11,7 @@ use App\Models\ReceiptItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Modules\Accounts\Entities\FeeStructureItem;
 use Modules\Configuration\Entities\AccountSchoolDetail;
 use Modules\Configuration\Entities\AccountSchoolDetailClass;
 use Modules\Configuration\Entities\AccountSchoolDetailStream;
@@ -27,6 +28,7 @@ class AccountStudentDetail extends Model
         'last_name',
         'dob',
         'gender',
+        'category',
         'account_school_details_class_id',
         'account_school_detail_stream_id',
         'grad',
@@ -47,6 +49,24 @@ class AccountStudentDetail extends Model
         return $this->belongsTo(AccountSchoolDetailClass::class,'account_school_details_class_id');
 
     }
+
+
+    public function feeStructureItems(){
+        return $this->hasMany(FeeStructureItem::class,'student_id');
+
+    }
+
+
+    public function getFeeStructureTotalAttribute(){
+
+        return $this->feeStructureItems()->where('student_id',$this->id)->sum('amount')->get();
+
+
+    }
+
+
+
+
 
     public function streams(){
 

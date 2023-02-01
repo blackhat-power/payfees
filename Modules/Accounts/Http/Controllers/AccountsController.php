@@ -41,6 +41,7 @@ use Modules\Configuration\Entities\AccountSchoolDetailStream;
 use Modules\Configuration\Entities\BankDetail;
 use Modules\Configuration\Entities\Semester;
 use Modules\Registration\Entities\AccountStudentDetail;
+use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Yoeunes\Toastr\Toastr;
 
@@ -2615,7 +2616,7 @@ public function feeReminderStore(Request $req){
 
 try {
 
-    // return $req->all();
+     return $req->all();
    
     DB::beginTransaction();
 
@@ -2683,6 +2684,8 @@ public function feeReminderDatatable(){
 
     $fee_reminders = FeeReminderSetting::all();
 
+    //  return $fee_reminders;
+
     return DataTables::of($fee_reminders)
     ->addColumn('amount',function($reminder){
 
@@ -2693,8 +2696,18 @@ public function feeReminderDatatable(){
         // return $reminder->semester->name;
         return 'error';
     })
-    ->rawColumns()
-->make();
+
+    ->addColumn('action', function($reminder){
+        $button = '';
+                         $button .= ' <a href="" data-original-title="Edit" data-edit_btn = "'.$reminder->id.'"  data-toggle="tooltip" class="button-icon button btn btn-sm rounded-small btn-info  editBtn" ><i class="fa fa-edit  m-0"></i></a>';
+                         $button .= ' <a href="" data-original-title="Delete" data-dlt_id="'.$reminder->id.'"  data-toggle="tooltip" class="button-icon button btn btn-sm rounded-small btn-danger  reminder-delete" ><i class="fa fa-trash  m-0"></i></a>';
+
+              return '<nobr>'.$button. '</nobr>';
+        // return $reminder->semester->name;
+        return $button;
+    })
+     ->rawColumns(['action'])
+    ->make();
 
     
 }

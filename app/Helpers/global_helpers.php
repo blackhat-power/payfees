@@ -48,8 +48,18 @@ class Helper{
  return $debtors_count;
 
 
-} 
+}
 
+public static function numberPad($value, $pads)
+{
+    return str_pad($value, $pads, '0', STR_PAD_LEFT);
+}
+
+public function generate_student_wallet($current_number){
+    $pads = 5;
+    $generated_wallet = 2001 .  $this->numberPad($current_number, $pads);
+
+}
 
 public static function add_leading_zeros($number, $length = 4)
     {

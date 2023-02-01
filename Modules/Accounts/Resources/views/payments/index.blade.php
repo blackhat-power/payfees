@@ -97,7 +97,7 @@ $("#filter_checkbox").change(function() {
         {data:'avatar', name:'avatar'},
          {data: 'name', name:'name'},
          {data:'billed_amount', name:'billed_amount'},
-         {data:'action', name:'action', orderable:false, searchable:false}
+         {data:'action', name:'action', orderable:false, searchable:false, }
      ],
 });
 

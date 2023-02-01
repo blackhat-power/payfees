@@ -23,7 +23,7 @@
             <span class="float-right">
                         <a href="javascript:void(0)" title="excel"  style="color:white" onclick="generateFile('excel')" class="btn btn-success btn-sm"> <i class="fa fa-file-excel"></i> Excel </a>
                         <a href="javascript:void(0)" title="pdf" onclick="generateFile('pdf')" style="color:white"  class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Pdf </a>
-                        <a type="button" href="javascript:void(0)" title="add student"   id="register" type="button" class=" btn btn-sm btn-primary" style="color: white;"><i class="fa fa-plus-circle"></i> New Student </a>
+                        <a type="button"title="add student" href="{{ route('students.registrationPortal')   }}"   {{-- id="register" --}} type="button" class=" btn btn-sm btn-primary" style="color: white;"><i class="fa fa-plus-circle"></i> New Student </a>
                     </span>
         <div class="card-body">
           <div class="collapse" id="collapsible_div">   
