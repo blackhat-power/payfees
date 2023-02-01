@@ -16,7 +16,7 @@ class CreateStreetsTable extends Migration
         Schema::create('streets', function (Blueprint $table) {
             $table->id();
             $table->string('name',191);
-            $table->foreignId('ward_id')->constrained('payfeetz_landlord.wards')
+            $table->foreignId('ward_id')->constrained(''.env('LANDLORD_DB_DATABASE').'.wards')
             ->onDelete('restrict')
             ->onUpdate('cascade');
 

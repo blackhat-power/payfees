@@ -14,6 +14,26 @@
                     <form id="student_registration_form" >
                         <div class="row">
                             <div class="col-md-4">
+                                <div  class="form-group">
+                                    <label for="">Admission Number</label>
+                                    <input type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div  class="form-group">
+                                    <label for="">Admission Date</label>
+                                    <input type="text" name="admitted_year" id="admitted_year" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <p class="text-center"><b>Personal Information</b></p>
+                        <hr style=" height: 5px;
+                        background-color:#2E9AFE ;
+                        border: none;">
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="First Name">First Name:</label>
                                     <input type="text" name="first_name" class="form-control form-control-sm" id="first_name">
@@ -102,10 +122,20 @@
                                  </div>
                             </div>
 
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Session">Year Admitted:</label>
-                                    <input type="number" min="2021" max="2050" name="admitted_year" id="admitted_year" placeholder="eg. 2021"  class=" yearpicker form-control form-control-sm">
+                                    <input type="number" min="2021" max="2050"  placeholder="eg. 2021"  class=" yearpicker form-control form-control-sm">
+                                 </div>
+                            </div> --}}
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Category</label>
+                                    <select name="student_category" id="student_category" class="form-control form-control-sm class_select">
+                                        <option value="">Category 1</option>
+                                        <option value="">Category 2</option>
+                                    </select>
                                  </div>
                             </div>
 

@@ -73,6 +73,10 @@
 
 }
 
+/* .modal .modal-header{
+  background-color: #00a65a !important" 
+} */
+
 .custom-table {
     border-spacing: 0;
     border-radius: 10px;

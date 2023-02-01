@@ -20,6 +20,7 @@ Route::middleware(['tenant','auth'])->group(function() {
 
 Route::prefix('students')->group(function() {
     Route::get('', [StudentsRegistrationController::class,'index'])->name('students.registration');
+    Route::get('registration/portal', [StudentsRegistrationController::class,'registrationPortal'])->name('students.registrationPortal');
     Route::post('store', [StudentsRegistrationController::class,'studentsStore'])->name('students.store');
     Route::get('datatable', [StudentsRegistrationController::class,'studentsDatatable'])->name('students.datatable');
     Route::get('{id}/profile', [StudentsProfileController::class,'studentProfile'])->name('students.profile');

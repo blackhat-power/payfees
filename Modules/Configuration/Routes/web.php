@@ -172,6 +172,15 @@ Route::middleware(['tenant','auth'])->group(function() {
         
         /* USER MANUAL */
         Route::get('user-manual', [UserManualController::class,'index'])->name('configurations.users.manual');
+
+
+        /* TRANPORT SETTINGS */
+
+       Route::get('transport-settings', [ConfigurationsController::class,'transport'])->name('configurations.school.transport');
+
+
+
+
     
     });
     

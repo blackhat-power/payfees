@@ -29,11 +29,11 @@ use Modules\Location\Entities\Village;
         Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
         Route::get('school-new-account',function(){
-                $data['districts'] = DB::select('select * from payfeetz_landlord.districts');
-                $data['banks']= DB::select('select * from payfeetz_landlord.bank_details');
-                $data['villages']= DB::select('select * from payfeetz_landlord.villages');
-                $data['categories'] = DB::select('select * from payfeetz_landlord.categories');
-                $data['currencies']= DB::select('select * from payfeetz_landlord.currencies');
+                $data['districts'] = DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.districts');
+                $data['banks']= DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.bank_details');
+                $data['villages']= DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.villages');
+                $data['categories'] = DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.categories');
+                $data['currencies']= DB::select('select * from '.env('LANDLORD_DB_DATABASE').'.currencies');
                 return view('auth.school_account_registration')->with($data);
             })->name('payfeetz.create.account');  
 

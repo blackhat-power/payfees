@@ -1336,6 +1336,18 @@ class ConfigurationsController extends Controller
 
    }
 
+
+   public function transport(){
+
+
+    $data['activeLink'] = 'transport';
+
+    return view('configuration::school.transport.index')->with($data);
+
+
+
+   }
+
  
 
 }

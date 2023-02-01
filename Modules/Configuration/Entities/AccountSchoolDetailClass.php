@@ -4,6 +4,7 @@ namespace Modules\Configuration\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Accounts\Entities\FeeMasterCategory;
 use Modules\Registration\Entities\AccountStudentDetail;
 
 class AccountSchoolDetailClass extends Model
@@ -36,9 +37,19 @@ class AccountSchoolDetailClass extends Model
     public function feeStructures(){
         return $this->hasMany(AccountSchoolDetailFeeStructure::class,'account_school_details_class_id');
     }
+
+    // public function feeCategory(){
+
+    //     return $this->belongsTo(FeeMasterCategory::class,'');
+
+    // }
     
     protected static function newFactory()
     {
         return \Modules\Configuration\Database\factories\AccountSchoolDetailClassFactory::new();
     }
+
+
+
+
 }

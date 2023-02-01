@@ -19,6 +19,65 @@
 @section('content-body')
 
 
+<div class="modal" tabindex="-1" role="dialog" id="fee_type_modal">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+       <div class="modal-header" style="background-color: #00a65a">
+         <h5 class="modal-title">Add Fee Group Type</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <form action="#" id="fee_header_form">
+            @csrf
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                      <input type="hidden" name="action" value="create">
+                     <label for="">Parent</label>
+                     <select type="text" name="parent_group" id="parent_group_id" class="form-control form-control-sm">
+                        <option value=""></option>
+                        @foreach ($parent_groups as $group )
+                        <option value="{{ $group->id  }}">{{   $group->name   }}</option>
+                        @endforeach
+                     
+                     </select>
+                  </div>
+               </div>
+               <div class="col-md-12">
+                  <div class="form-group">
+                      <input type="hidden" name="action" value="create">
+                     <label for=""> Fee Group Type Header</label>
+                     <input type="text" name="name" id="fee_group_header" class="form-control form-control-sm">
+                  </div>
+               </div>
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label for=""> Description </label>
+                     <input name="description" type="text" class="form-control form-control-sm">
+                  </div>
+               </div>
+            </div>
+
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-primary btn-sm" id="save_header">Save changes</button>
+         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+       </div>
+     </div>
+   </div>
+ </div>
+
+
+
+
+
+ 
+
+{{-- 
+
       <div class="card" style="border-top: 3px solid #faa21c; width:30%" >
          <div class="card-header">
             Add Fee Group Type
@@ -27,6 +86,19 @@
             <form action="#" id="fee_header_form">
                @csrf
                <div class="row">
+                  <div class="col-md-12">
+                     <div class="form-group">
+                         <input type="hidden" name="action" value="create">
+                        <label for="">Parent</label>
+                        <select type="text" name="parent_group" id="parent_group_id" class="form-control form-control-sm">
+                           <option value=""></option>
+                           @foreach ($parent_groups as $group )
+                           <option value="{{ $group->id  }}">{{   $group->name   }}</option>
+                           @endforeach
+                        
+                        </select>
+                     </div>
+                  </div>
                   <div class="col-md-12">
                      <div class="form-group">
                          <input type="hidden" name="action" value="create">
@@ -46,17 +118,21 @@
 
             <span class="float-right"> <a href="javascript:void(0)" id="save_header" class="btn btn-sm btn-primary"> Save </a> </span>
          </div>
-      </div>
+      </div> --}}
 
 
-      <div class="card" style="border-top: 3px solid  #faa21c; width:68%; margin-left:2%">
-         <div class="card-header"> Fee Type Group List </div>
+      <div class="card" style="border-top: 3px solid  #faa21c; width:100%;">
+         <div class="card-header">
+             Fee Type Group List 
+            <span class=" float-right text-right"> <a class="btn btn-primary btn-sm" id="new_type_group" ><i class="fa fa-plus"></i>  New Group  </a>  </span>
+            </div>
          <div class="card-body">
-            <table style="width: 100%" id="fee_type_group">
+            <table class="table table-striped table-borderd dataTable" style="width: 100%" id="fee_type_group">
             <thead>
                <tr>
                    <th style="width: 2% !important;">Code</th>
                   <th>Names</th>
+                  <th>Parent</th>
                   <th>Description</th>
                </tr>
             </thead>
@@ -65,8 +141,6 @@
             </table>
          </div>
       </div>
-
-
    <div class="card card-block card-stretch card-height" style="border-top:4px solid #00a65a; width:'100%">
       <div class="card-header">
       </div>
@@ -211,6 +285,12 @@
  $('#fee_group').select2({width:'100%'});
 
 
+ $('#new_type_group').click(function(){
+
+$('#fee_type_modal').modal('show');
+
+ });
+
 
  $('#save_header').click(function(){
 
@@ -241,6 +321,9 @@ $.ajax({
             }
 
            });
+
+           $('#fee_type_modal').modal('hide');
+
        }
        else{
            toastr.warning('Failed To Save Data', 'Failed')
@@ -263,6 +346,8 @@ $.ajax({
 
  })
 
+ $('#parent_group_id').select2({width:'100%'});
+
 
 {{-- $('#fee_type_group').Datat --}}
 
@@ -281,6 +366,7 @@ var fee_type_group_table = $('#fee_type_group').DataTable({
    columns:[
       {data: 'id', name:'id'},
       {data: 'name', name:'name'},
+      {data: 'parent', name:'parent'},
       {data: 'description', name:'description'},
   ],
   "columnDefs": [ {{-- { className: " text-right font-weight-bold", "targets": [ 3 ] } --}} ],

@@ -9,6 +9,7 @@ use App\Exports\StudentCollectionExport;
 use App\Models\Account;
 use App\Models\AccountSubGroup;
 use App\Models\Contact;
+use App\Models\FeeGroup;
 use App\Models\FeeTypeGroup;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
+use Modules\Accounts\Entities\FeeReminderSetting;
 use Modules\Configuration\Entities\AccountSchoolBankDetail;
 use Modules\Configuration\Entities\AccountSchoolDetail;
 use Modules\Configuration\Entities\AccountSchoolDetailClass;
@@ -39,6 +41,7 @@ use Modules\Configuration\Entities\AccountSchoolDetailStream;
 use Modules\Configuration\Entities\BankDetail;
 use Modules\Configuration\Entities\Semester;
 use Modules\Registration\Entities\AccountStudentDetail;
+use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Yoeunes\Toastr\Toastr;
 
@@ -399,14 +402,18 @@ $journal =  Journal::updateOrCreate(
 
         try {
             DB::beginTransaction();
+
+            // return $request->all();
+
             switch ($request->action){
                 case 'edit':
                     $fee_type_group = FeeTypeGroup::updateOrCreate(
                         [
                             'id'=>$request->id
-                        ],
+                        ], 
                         [
                             'name'=>$request->name,
+                            'parent_id'=>$request->parent_group,
                             'description'=>$request->description
                         ]
                     );
@@ -422,6 +429,7 @@ $journal =  Journal::updateOrCreate(
                         ],
                         [
                             'name'=>$request->name,
+                            'parent_id'=>$request->parent_group,
                             'description'=>$request->description
                         ]
                     );
@@ -2097,26 +2105,6 @@ $journal =  Journal::updateOrCreate(
          }
 
      }
-
-
-       /* fee reminder settings */
-       public function feeReminderIndex(){
-
-        $data['activeLink'] = 'fee_reminder_settings';
-        return view('accounts::fee_reminder.index')->with($data);
-    }
-
-
-    public function feeReminderForm(){
-
-        $data['activeLink'] = 'fee_reminder_settings';
-        return view('accounts::fee_reminder.form')->with($data);
-
-    }
-
-
-
-
           /* ACCOUNTING TRANSACTIONS */
 
     public function paymentVoucherIndex(){
@@ -2538,7 +2526,7 @@ try{
     
             $pdf = FacadePdf::loadView('accounts::transactions.payment_voucher.printouts.pdf', $data);
     
-            return $pdf->stream('itsolutionstuff.pdf', array("Attachment" => false));
+            return $pdf->stream('payment_voucher.pdf', array("Attachment" => false));
             
         }
 
@@ -2594,6 +2582,135 @@ try{
 
         
     }
+
+
+
+
+    /* FEE REMINDER SETTINGS */
+
+
+   public function feeReminderIndex(){
+
+    $data['activeLink'] = 'fee_reminder_settings';
+    $data['semesters'] = Semester::all();
+    $data['classes'] = AccountSchoolDetailClass::all();
+    $data['academic_years'] = AccountSchoolDetailSeason::all();
+    $data['bill_categories'] = FeeTypeGroup::where('parent_id',NULL)->get();
+    return view('accounts::fee_reminder.index')->with($data);
+
+
+
+   }
+
+
+   public function feeReminderCreate(){
+
+    $data['activeLink'] = 'fee_reminder_settings';
+    return view('accounts::fee_reminder.form')->with($data);
+
+
+    
+}
+
+public function feeReminderStore(Request $req){
+
+try {
+
+     return $req->all();
+   
+    DB::beginTransaction();
+
+    $amount  = str_replace(',','',$req->amount);
+
+  $fee_reminder =  FeeReminderSetting::updateOrCreate(
+        [
+            'id'=>null
+        ],
+    
+        [
+    
+            'bill_category_id'=>$req->category_id,
+            'class_id'=>$req->class,
+            'academic_year_id'=>$req->academic_year,
+            'semester' => $req->semester,
+            'amount'=> $amount,
+            'counter'=> $req->counter,
+            'period_btn_reminders'=>$req->period_btn_number
+    
+        ]
+        );
+
+        DB::commit();
+
+        if($fee_reminder){
+
+            $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+            return response($data);
+
+        }
+
+        $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
+        return  response($data);
+
+} catch (QueryException $e) {
+    return $e->getMessage();
+    $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+}
+// return $req->all();
+
+
+//    DB::commit(); 
+
+//         if ($journal_item) {
+//             session()->flash('success','Record created successful');
+//             $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+//             return response($data);
+    
+//         }
+    
+//         $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
+//         return  response($data);
+    
+//     } catch (QueryException $e) {
+//         return $e->getMessage();
+//         $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+//         return  response($data);
+    
+//     }
+    
+}
+public function feeReminderDatatable(){
+
+
+    $fee_reminders = FeeReminderSetting::all();
+
+    //  return $fee_reminders;
+
+    return DataTables::of($fee_reminders)
+    ->addColumn('amount',function($reminder){
+
+        return number_format($reminder->amount);
+    })
+    ->addColumn('semester', function($reminder){
+
+        // return $reminder->semester->name;
+        return 'error';
+    })
+
+    ->addColumn('action', function($reminder){
+        $button = '';
+                         $button .= ' <a href="" data-original-title="Edit" data-edit_btn = "'.$reminder->id.'"  data-toggle="tooltip" class="button-icon button btn btn-sm rounded-small btn-info  editBtn" ><i class="fa fa-edit  m-0"></i></a>';
+                         $button .= ' <a href="" data-original-title="Delete" data-dlt_id="'.$reminder->id.'"  data-toggle="tooltip" class="button-icon button btn btn-sm rounded-small btn-danger  reminder-delete" ><i class="fa fa-trash  m-0"></i></a>';
+
+              return '<nobr>'.$button. '</nobr>';
+        // return $reminder->semester->name;
+        return $button;
+    })
+     ->rawColumns(['action'])
+    ->make();
+
+    
+}
 
 
 }

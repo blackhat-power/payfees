@@ -17,7 +17,7 @@ class CreateAccountSchoolDetailStreamsTable extends Migration
             $table->id();
             $table->string('name',191);
             $table->string('description',191)->nullable();
-            $table->foreignId('stream_id')->constrained('payfeetz_landlord.streams')
+            $table->foreignId('stream_id')->constrained(''.env('LANDLORD_DB_DATABASE').'.streams')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ->nullable();

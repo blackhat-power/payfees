@@ -119,6 +119,19 @@ Route::middleware(['tenant','auth'])->group(function() {
        Route::get('accounts-ledgers-list/form', [AccountsController::class,'accountLedgerForm'])->name('accounts.ledgers.form');
        Route::get('accounts-ledgers-list/print', [AccountsController::class, 'ledgerprinting'])->name('accounts.ledgers.printouts');
 
+
+
+       /* FEE REMINDER SETTINGS */
+       
+       Route::get('fee-reminder-index', [AccountsController::class,'feeReminderIndex'])->name('accounts.fee_reminder.settings');  
+       Route::post('fee-reminder-store', [AccountsController::class,'feeReminderStore'])->name('accounts.fee_reminder.store');
+       Route::get('fee-reminder-datatable', [AccountsController::class,'feeReminderDatatable'])->name('accounts.fee_reminder.datatable');
+       Route::get('fee-reminder-create', [AccountsController::class,'feeReminderCreate'])->name('accounts.fee_reminder.create');
+
+
+
+
+
        /* COLLECTION */
 
        Route::get('collection/index', [AccountsController::class, 'collectionIndex'])->name('accounts.collection.index');
@@ -159,7 +172,44 @@ Route::middleware(['tenant','auth'])->group(function() {
         /* student invoice */
 
         Route::get('student-create-invoice', [StudentAccountingController::class,'index'])->name('accounts.student.invoice.create');
+
+
+
+        /* NEW FEE STRUCTURE JAN 2023 */
+
+        Route::get('fee-structure-master',[PaymentSettingsController::class,'feeMaster'])->name('accounts.school.fee.structure.master');
+        Route::get('fee-structure-master/particulars',[PaymentSettingsController::class,'feeMasterParticulars'])->name('accounts.school.fee.structure.master.particulars');
+        Route::get('fee-structure-master/particulars/datatable',[PaymentSettingsController::class,'feeMasterParticularsDatatable'])->name('accounts.school.fee.structure.master.particulars.datatable');
+
+
+        Route::post('fee-structure-master/particulars-store',[PaymentSettingsController::class,'feeParticularStore'])->name('accounts.school.fee.structure.master.particulars.store');
+        Route::get('fee-structure-master/fee/categories',[PaymentSettingsController::class,'feeMasterCategories'])->name('accounts.school.fee.structure.master.categories.index');
+
+        Route::post('fee-structure-master/fee/categories-store',[PaymentSettingsController::class,'feeMasterCategoryStore'])->name('accounts.school.fee.structure.master.categories.store');
+
+        Route::post('fee-structure-master/fee-category/particular-store',[PaymentSettingsController::class,'feeCategoryParticularStore'])->name('accounts.school.fee.structure.patcl.store');
+        Route::get('fee-structure-master/fee-category/particular-index',[PaymentSettingsController::class,'feeCategoryParticularIndex'])->name('accounts.school.fee.structure.patcl.index');
+
+        Route::post('fee-structure-master/fee-category/particular-category',[PaymentSettingsController::class,'feeCategoryParticularCategory'])->name('accounts.school.fee.structure.patcl.category');
+
+        Route::post('fee-structure-master/fee-category/particular-category-store',[PaymentSettingsController::class,'feeCategoryParticularCategoryStore'])->name('accounts.school.fee.structure.patcl.category.store');
+
+
         
+
+        /* new fee view structure  */
+
+        
+        Route::get('fee-structure/new-master/index',[PaymentSettingsController::class,'newFeeStructureIndex'])->name('accounts.school.new.fee.structure');
+        Route::get('fee-structure/new-master/datatable',[PaymentSettingsController::class,'newFeeStructureDatatable'])->name('accounts.school.new.fee.structure.datatable');
+        Route::get('fee-structure-master/new-master/preview',[PaymentSettingsController::class,'newFeeStructureIndex'])->name('accounts.school.new.fee.structure');
+
+
+        /* GET CATEGORY CLASSES */
+        Route::post('fee-structure-master/new-master/category-classes',[PaymentSettingsController::class,'newFeeStructureCategoryClasses'])->name('accounts.school.new.fee.structure.category.classes');
+
+        /* GET PAYMENT PARTICULARS */
+        Route::post('fee-structure-master/new-master/fee-items',[PaymentSettingsController::class,'newFeeStructureStudentFeeItems'])->name('accounts.school.new.fee.structure.student.fee.items');
     });
     
 });
