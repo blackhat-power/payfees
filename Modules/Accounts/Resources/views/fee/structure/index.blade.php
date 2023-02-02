@@ -46,11 +46,14 @@
              .batch{
                 display: flex;
                 direction: horizontal;
-               justify-content: start;
+               justify-content: space-between;
                 width: 100%;
             }
             .spaces{
                 padding: 0px 12px;
+            }
+            .div_spaces{
+                display: flex;
             }
 /*
             .batch_container{
@@ -194,12 +197,12 @@
                                     <div id="fee_house">
 
                                     </div>
-                                    @foreach ($classes as $class )
+                                    {{-- @foreach ($classes as $class )
                                     <div class="batch">
                                        <span class="spaces"> <input type="checkbox" value="{{$class->id}}" name="classes[]" class="form-control checkboxes form-control-sm"></span>  
                                         <span class="spaces">{{   $class->name  }}</span>
                                     </div>
-                                    @endforeach
+                                    @endforeach --}}
                                     <!-- Your content here -->
                                 </div>
                             </div>
@@ -236,6 +239,44 @@ setTimeout(function(){
 
 });
 
+
+
+document.addEventListener('click',function(event){
+let elem_type = event.target.type;
+
+let total = 0;
+if( elem_type == 'checkbox'){
+    let amount = parseFloat(event.target.closest('.total_check').querySelector('.amount').textContent);
+    if(event.target.checked){
+        total +=amount;
+
+    }else{
+
+        total -=amount;
+
+    }
+
+    $('#total_bd').text(total);
+
+} 
+
+
+})
+
+
+{{-- $('.my_checkboxes').click(function(){
+
+console.log('clicked');
+
+}) --}}
+
+
+
+
+
+
+
+
 $('#category_id').change(function(){
 let category_id =  $(this).val();
 $('#by_class').removeAttr('style','display:none');
@@ -267,9 +308,6 @@ setTimeout(function(){
     $('#loader_div').attr('style','display:none');
 
 },500)
-
-
-
 
 });
 
@@ -323,8 +361,8 @@ let query_table = $('#query_fee_structure_table').DataTable({
                     class_id : class_id,
                 },
                 success:function(response){
-
-                    console.log(response);
+                    $('#fee_house').html(response);
+                    {{-- console.log(response); --}}
 
                 },
                 error:function(){
@@ -332,10 +370,6 @@ let query_table = $('#query_fee_structure_table').DataTable({
 
                 }
             });
-
-            
-
-            console.log('now now');
 
 
         });

@@ -13,6 +13,7 @@
 
 use Modules\Configuration\Http\Controllers\ConfigurationsController;
 use Modules\Configuration\Http\Controllers\MyAccountController;
+use Modules\Configuration\Http\Controllers\ReminderSettingsController;
 use Modules\Configuration\Http\Controllers\SystemSettingsController;
 use Modules\Configuration\Http\Controllers\UserSettingsController;
 use Modules\Configuration\Http\Controllers\UserManualController;
@@ -178,7 +179,12 @@ Route::middleware(['tenant','auth'])->group(function() {
 
        Route::get('transport-settings', [ConfigurationsController::class,'transport'])->name('configurations.school.transport');
 
+          /* REMINDER SETTINGS */
+          Route::get('fee-structure-master/reminder-settings/index',[ReminderSettingsController::class,'index'])->name('accounts.master.school.reminder.settings');
 
+          // Route::get('fee-structure-master/reminder-settings/index',[PaymentSettingsController::class,'ReminderSettings'])->name('accounts.school.new.fee.structure.student.fee.items');
+          // Route::get('fee-structure-master/reminder-settings/index',[PaymentSettingsController::class,'ReminderSettings'])->name('accounts.school.new.fee.structure.student.fee.items');
+          // Route::get('fee-structure-master/reminder-settings/index',[PaymentSettingsController::class,'ReminderSettings'])->name('accounts.school.new.fee.structure.student.fee.items');
 
 
     

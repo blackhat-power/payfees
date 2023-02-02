@@ -210,6 +210,10 @@ Route::middleware(['tenant','auth'])->group(function() {
 
         /* GET PAYMENT PARTICULARS */
         Route::post('fee-structure-master/new-master/fee-items',[PaymentSettingsController::class,'newFeeStructureStudentFeeItems'])->name('accounts.school.new.fee.structure.student.fee.items');
+
+
+      
+
     });
     
 });

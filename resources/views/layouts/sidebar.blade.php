@@ -200,11 +200,13 @@
                                                 </a>
                                                 
                                             </li> 
-                                            <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_reminder_settings' ? 'active' : '' }} ">
+                                            {{-- <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_reminder_settings' ? 'active' : '' }} ">
                                                 <a href="{{ route('accounts.fee_reminder.settings') }}">
                                                     <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee Reminder Settings </span>
                                                 </a>
-                                            </li> 
+                                            </li>  --}}
+
+        
             
                                             </ul>
                                         </li>                          
@@ -411,6 +413,12 @@
                                     <i style="background-color: unset !important; font-size:8px" class="fa fa-circle"></i><span> Transport </span>
                                 </a>
                         </li>
+
+                        <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'reminder_index' ? 'active' : '' }} ">
+                            <a href="{{ route('accounts.master.school.reminder.settings') }}">
+                                <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Reminder Settings </span>
+                            </a>
+                        </li> 
 
 
                             <li class="" style="background-color: #d3d3d3 !important;">

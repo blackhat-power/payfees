@@ -734,11 +734,6 @@ if (!empty($request->get('category_id'))) {
 
         // return $student_id;
         $category_id = $req->category_id;
-        if(is_numeric($req->class_id)){
-            return $req->class_id;
-            $data['class_id'] = $req->class_id;
-        }
-
        $student_fee_items = FeeStructure::join('fee_structure_items','fee_structures.id','fee_structure_items.fee_structure_id')
        ->join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
        ->join('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
@@ -747,19 +742,47 @@ if (!empty($request->get('category_id'))) {
         ->where('fee_structure_items.student_id',$student_id);
 
         if(is_numeric($req->class_id)){
-            return 'ooo';
+            return $req->class_id;
             $student_fee_items->where('class_id',$req->class_id);
         }
-       $html = '<div class="batch">
-                 <span class="spaces"> <input type="checkbox" value="{{$class->id}}" name="classes[]" class="form-control checkboxes form-control-sm"></span>  
-                 <span class="spaces">{{   $class->name  }}</span>
-                </div>'
-                ;
+        $html = '';
+        $total = 0;
 
-                
-        return response($student_fee_items->get());
+       
+        foreach ($student_fee_items->get() as $key => $item) {
+            $total += $item->amount;
+            $html .= '
+            <div class="batch total_check">
+
+            <div class="div_spaces">
+            <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]" class="form-control checkboxes form-control-sm" checked></span>  
+            <span class="spaces">'.$item->fee_name .'</span>
+            </div>
+
+            <div class="div_spaces">
+            <span class="spaces"> &nbsp; </span>
+            <span style="float:right; margin-left:3rem" class="spaces amount">  '.$item->amount.' </span>
+           </div>
+           </div>
+           ';
 
 
+           if($key == count($student_fee_items->get()) - 1){
+            $html.= '<div class="batch"> 
+            <div class="div_spaces">
+            <span class="spaces checkboxes"> </span>
+            <span class="spaces text-right text-bold" style="margin-left:.9rem"> <b> TOTAL </b> </span>
+            </div>
+            <div class="div_spaces">
+            <span class="spaces text-bold" id="total">  <b id="total_bd"> '.$total.' </b> </span>
+            </div>
+            </div>';
+        
+        }
+
+        }
+
+        return response($html);
 
     }
 

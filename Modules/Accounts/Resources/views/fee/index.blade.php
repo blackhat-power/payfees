@@ -34,6 +34,53 @@
                 margin-top: 1.4rem;
             } 
 
+
+.icon {
+        width: 12rem;
+        height: 70px;
+        text-align: center;
+        margin: 10px;
+        display: inline-block;
+      }
+      .icon i {
+        font-size: 40px;
+        color: #333;
+        margin-top: 15px;
+      }
+      .icon span {
+        font-size: .9rem;
+        margin-top: 10px;
+      }
+
+
+      .container_style{
+
+        display: flex;
+        direction: horizontal;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom:2rem;
+
+
+      }
+
+  .box {
+  /* width: 300px;
+  height: 200px; */
+  /* margin: 50px auto; */
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px #ccc;
+  transition: all 0.3s ease-in-out;
+}
+
+.box:hover {
+  border: 2px solid #04476a;
+  box-shadow: 0 4px 10px #04476a;
+  transform: translateY(-2px);
+}
+
+            
+
           </style>
 
 @endsection
@@ -50,25 +97,41 @@
         <div class="card-body">
 
             <div class="container">
-                <div class="row">
-                  <div class="col-sm-3">
-                    <i class="fas fa-heart"></i>
-                    <h3> <a href="{{ route('accounts.school.fee.structure.master.particulars') }}">Master Fees</a> </h3>
-                    <small>Create Master Particulars</small>
+                    <div class="container_style">
+                    <div class="box">
+                      <a href="{{ route('accounts.school.fee.structure.master.particulars') }}">
+                      <div class="icon">
+                      <i class="fas fa-heart"></i>
+                      <h6>Master Fees </h6>
+                      <small>Create Master Particulars</small>
+                      </div>
+                      </a>
                   </div>
-                  <div class="col-sm-3">
+
+                  <div class="box">
+                    <a href="{{ route('accounts.school.fee.structure.master.categories.index') }}">
+                    <div class="icon">
                     <i class="fas fa-camera"></i>
-                    <h3> <a href="{{ route('accounts.school.fee.structure.master.categories.index') }}">Create Fees</a> </h3>
+                    <h6> Create Fees </h6>
                     <small>Create Master Fees </small>
-                  </div>
-                  <div class="col-sm-3">
+                    </div>
+                  </a>
+                    </div>
+
+                  <div class="box">
+                    <a href="{{ route('accounts.school.new.fee.structure') }}">
+                    <div class="icon">
                     <i class="fas fa-book"></i>
-                    <h3> <a href="{{ route('accounts.school.new.fee.structure') }}">Fee Structure</a> </h3>
+                    <h6> Fee Structure </h6>
                     <small>Displays fee structure for student</small>
                   </div>
-                  
+                    </a>
+                  </div>
                 </div>
-              </div>
+                </div>
+        </div>
+    </div>
+    
 
 
  @endsection
