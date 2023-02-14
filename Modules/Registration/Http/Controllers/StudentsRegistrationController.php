@@ -26,6 +26,8 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelExcel;
+use Modules\Accounts\Entities\FeeMasterCategory;
+use Modules\Accounts\Entities\FeeStructure;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 
@@ -780,6 +782,403 @@ class StudentsRegistrationController extends Controller
 
 
       }
+
+
+
+      public function studentWizardStore(Request $request){
+
+        try {
+            DB::beginTransaction();
+
+            // return $request->all();
+            $full_name = $request->first_name .' '. $request->middle_name . ' '. $request->last_name;
+           $account = Account::updateOrCreate(
+                [
+                    'id'=>$request->account_id
+                ],
+                [
+                    'name'=>$full_name,
+                    'created_by'=>auth()->user()->id,
+                ]
+
+                );
+
+                if($account){
+                //    return $class = $request->students_stream;
+                     if($request->gender == 'male'){
+                         $avatar = 'man_avatar.png';
+                     }
+                     else{
+                        $avatar = 'avatar-woman.png';
+                     }
+                   $student_detail =  AccountStudentDetail::updateOrCreate(
+                        [
+                            'id'=>$request->stdnt_id
+                        ],
+                        [
+                            'account_id'=>$account->id,
+                            'first_name'=>$request->first_name,
+                            'middle_name'=>$request->middle_name,
+                            'last_name'=>$request->last_name,
+                            'gender'=>$request->gender,
+                            'admitted_year'=>$request->admitted_year,
+                            'dob'=>$request->dob,
+                            'session'=>AccountSchoolDetail::select('account_school_details.*')->first()->current_session,
+                            'account_school_details_id'=>AccountSchoolDetail::select('account_school_details.*')->first()->id,
+                            'account_school_details_class_id'=>$request->students_class,
+                            'account_school_detail_stream_id'=>$request->students_stream,
+                            'profile_pic'=>$avatar
+                        ]
+                        );
+
+                        $full_name = $request->first_name .' '.$request->middle_name.' '.$request->last_name;
+
+                        $user = User::create([
+                            'name'=>$full_name,
+                            'username'=>strtoupper($request->last_name),
+                            'gender'=>$request->gender,
+                            'user_type'=>4,
+                            'student_id'=>$student_detail->id,
+                            'created_by'=>auth()->user()->id,
+                            'phone'=>$request->phone,
+                            'email'=>$request->email,
+                            'address'=>$request->address,
+                            'passport'=>$avatar,
+                            'password'=>bcrypt('123456')
+                        ]);
+                        $user->assignRole(2); 
+
+
+                    Contact::updateOrCreate(
+                        [
+                            'id'=>$request->std_phone_id
+                        ],
+                        
+                        [
+                            'contact_type_id'=>1,
+                            'contact'=>$request->phone,
+                            'contactable_id' => $student_detail->id,
+                            'contactable_type' => AccountStudentDetail::class,
+
+                        ]);
+
+                        Contact::updateOrCreate(
+                            [
+                                'id'=>$request->std_email_id
+                            ],
+                            [
+                                'contact_type_id'=>2,
+                                'contact'=>$request->email,
+                                'contactable_id' => $student_detail->id,
+                                'contactable_type' => AccountStudentDetail::class,
+    
+                            ]);
+
+
+                            Contact::updateOrCreate(
+                                [
+                                    'id'=>$request->std_address_id
+                                ],
+                                [
+                                    'contact_type_id'=>3,
+                                    'contact'=>$request->address,
+                                    'contactable_id' => $student_detail->id,
+                                    'contactable_type' => AccountStudentDetail::class,
+        
+                                ]);
+                }
+          DB::commit();
+
+          if($student_detail){
+
+           $data = ['state'=>'Done', 'title'=>'Successful', 'student'=>$student_detail, 'msg'=>'Record created successful'];
+
+           return response($data);
+
+          }
+
+          $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record could not be created'];
+          return response($data);
+
+
+        } catch (QueryException $e) {
+            $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+            // session()->flash('error','Something went wrong!<br />' . $e->errorInfo[2]);
+            return  response($data);
+           
+        }
+        
+        
+        
+        }
+
+        public function studentWizardContactPersonStore(Request $request){
+         $student_detail = AccountStudentDetail::orderBy('id','DESC')->first();
+          try {
+            
+            if($request->father_name){
+
+                $father = ContactPerson::updateOrCreate(
+                    [
+                        'id'=>$request->father_id
+                    ],
+                    [
+                    'full_name'=>$request->father_name,
+                    'occupation'=>$request->father_occupation,
+                    'relationship'=>'FATHER',
+                    'personable_type' => AccountStudentDetail::class,
+                    'personable_id' => $student_detail->id,
+
+                ]);
+
+            Contact::updateOrCreate(
+                [
+                    'id'=>$request->father_contact_id
+                ],
+                [
+                    'contact_type_id'=>1,
+                    'contact'=>$request->father_phone,
+                    'contactable_id' => $father->id,
+                    'contactable_type' => ContactPerson::class,
+
+                ]);
+
+            }
+
+            if($request->mother_name){
+
+                $mother = ContactPerson::updateOrCreate(
+                    [
+                        'id'=>$request->mother_id
+                    ],
+                    [
+                    'full_name'=>$request->mother_name,
+                    'occupation'=>$request->mother_occupation,
+                    'relationship'=>'MOTHER',
+                    'personable_type' => AccountStudentDetail::class,
+                    'personable_id' => $student_detail->id,
+
+                    ]
+                                                    );
+
+                Contact::updateOrCreate(
+                    [
+                     'id'=>$request->mother_contact_id
+                    ],
+                    [
+                        'contact_type_id'=>1,
+                        'contact'=>$request->mother_phone,
+                        'contactable_id' => $mother->id,
+                        'contactable_type' => ContactPerson::class,
+
+                    ]
+                );
+
+            }
+
+            if($request->guardian_name){
+
+                $guardian = ContactPerson::updateOrCreate(
+
+                    [
+                        'id'=>$request->guardian_id
+                    ],
+                    
+                    [
+                    'full_name'=>$request->guardian_name,
+                    'occupation'=>$request->guardian_occupation,
+                    'relationship'=>'GUARDIAN',
+                    'personable_type' => AccountStudentDetail::class,
+                    'personable_id' => $student_detail->id,
+
+                ]);
+
+            $final_store =  Contact::updateOrCreate(
+                [
+                    'id'=>$request->guardian_contact_id
+                ],
+                    [
+                        'contact_type_id'=>1,
+                        'contact'=>$request->guardian_phone,
+                        'contactable_id' => $guardian->id,
+                        'contactable_type' => ContactPerson::class,
+
+                    ]
+                );
+
+
+            }
+
+            DB::commit();
+
+            if($student_detail){
+  
+             $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+  
+             return response($data);
+  
+            }
+  
+            $data = ['state'=>'Fail', 'title'=>'Successful', 'msg'=>'Record could not be created'];
+            return response($data);
+  
+  
+          } catch (QueryException $e) {
+              $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+              // session()->flash('error','Something went wrong!<br />' . $e->errorInfo[2]);
+              return  response($data);
+             
+          }
+
+        }
+
+
+        public function studentClassPartStore(Request $req){
+
+            try {
+                
+            DB::beginTransaction();
+            $student_detail = AccountStudentDetail::orderBy('id','DESC')->first();
+            $data = [ 'account_school_details_class_id'=>$req->students_class,'account_school_detail_stream_id'=>$req->students_stream ];
+            $update =  $student_detail->update($data);
+            $class_id = AccountStudentDetail::find($req->student_id)->account_school_details_class_id;
+            $category = AccountStudentDetail::find($req->student_id)->category;
+                DB::commit();
+
+                if($update){
+      
+                 $data = ['state'=>'Done','class_id'=>$class_id,'category'=>$category, 'title'=>'Successful', 'msg'=>'Record created successful'];
+      
+                 return response($data);
+      
+                }
+      
+                $data = ['state'=>'Fail', 'title'=>'Successful', 'msg'=>'Record could not be created'];
+                return response($data);
+
+
+
+            } catch (QueryException $e) {
+                
+                $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+                // session()->flash('error','Something went wrong!<br />' . $e->errorInfo[2]);
+                return  response($data);
+
+            }
+        }
+
+        public function queryFeeStructure( Request $req){
+
+$html = '';
+         $fee_masters =  FeeMasterCategory::join('fee_structures','fee_master_categories.id','=','fee_structures.category_id')
+       ->select('fee_master_categories.id as the_category_id','fee_master_categories.name as category_name','fee_structures.id as fee_structure_id')
+       ->where('class_id',$req->class_id)
+          ->groupBy('category_id')->get();
+
+
+
+
+        //   $student_id = $req->student_id;
+
+        //   // return $student_id;
+        //   $category_id = $req->category_id;
+        //   $student_fee_items = FeeStructure::join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
+        //  ->join('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
+        //  ->join('account_student_details','account_student_details.id','=','fee_structures.student_id')
+        //  ->select('fee_structures.class_id','fee_structures.category_id','amount','fee_master_particulars.name as fee_name','particular_id')
+        //   ->where('category_id',$category_id)
+        //   ->where('fee_structures.student_id',$student_id);
+  
+        //   if(is_numeric($req->class_id)){
+        //   //    $req->class_id;
+        //       $student_fee_items->where('class_id',$req->class_id);
+        //   }
+        //   $html = '';
+        //   $total = 0;
+  
+         
+        //   foreach ($student_fee_items->get() as $key => $item) {
+        //       $total += $item->amount;
+        //       $html .= '
+        //       <div class="batch total_check">
+  
+        //       <div class="div_spaces">
+        //       <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]" class="form-control checkboxes form-control-sm" checked></span>  
+        //       <span class="spaces">'.$item->fee_name .'</span>
+        //       </div>
+  
+        //       <div class="div_spaces">
+        //       <span class="spaces"> &nbsp; </span>
+        //       <span style="float:right; margin-left:3rem" class="spaces amount">  '.$item->amount.' </span>
+        //      </div>
+        //      </div>
+        //      ';
+  
+  
+        //      if($key == count($student_fee_items->get()) - 1){
+        //       $html.= '<div class="batch"> 
+        //       <div class="div_spaces">
+        //       <span class="spaces checkboxes"> </span>
+        //       <span class="spaces text-right text-bold" style="margin-left:.9rem"> <b> TOTAL </b> </span>
+        //       </div>
+        //       <div class="div_spaces">
+        //       <span class="spaces text-bold" id="total">  <b id="total_bd"> '.$total.' </b> </span>
+        //       </div>
+        //       </div>';
+          
+        //   }
+  
+        //   }
+
+
+
+
+
+        
+        foreach ($fee_masters as $key => $fee) {
+        $total = 0;
+        $student_fee_items = FeeStructure::join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
+         ->join('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
+         ->join('account_student_details','account_student_details.id','=','fee_structures.student_id')
+         ->select('fee_structures.class_id','fee_structures.category_id','amount','fee_master_particulars.name as fee_name','particular_id')
+          ->where('category_id',$fee->the_category_id)
+          ->where('class_id',$req->class_id)
+          ->groupBy('particular_id')
+          ->get();
+
+            $html.= '<div class="accordion-container">
+            <a href="#" class="accordion-toggle">'.$fee->category_name.'</a>
+            <div class="accordion-content">';
+            foreach($student_fee_items as $key=>$item){
+                $total += $item->amount;
+                $html .= '<div class="form-check">
+                <div class="batch total_check">
+                      <div class="div_spaces">
+                      <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]"  class="form-check-input checkboxes" checked></span>  
+                      <span class="spaces">'.$item->fee_name .'</span>
+                      </div>
+          
+                      <div class="div_spaces">
+                      <span class="spaces"> &nbsp; </span>
+                      <span style="float:right; margin-left:3rem" class="spaces amount">  '.$item->amount.' </span>
+                     </div>
+                     </div>
+                
+              </div>';
+
+            }
+            $html.='</div> </div>';
+          }
+          
+return response($html);
+
+           return FeeStructure::leftjoin('fee_master_particulars','fee_master_particulars.id','=','fee_structures.particular_id')
+           ->where('class_id',$req->class_id)->orderBy('amount','DESC')->groupBy('particular_id')->get();
+            // return $req->all();
+
+
+
+        }
 
 
 

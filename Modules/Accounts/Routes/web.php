@@ -29,10 +29,7 @@ Route::middleware(['tenant','auth'])->group(function() {
         Route::get('/invoices-new/{c_id?}/{acc_id?}/{std_id?}/{season_id?}', [AccountsController::class, 'create'])->name('accounts.invoices.create');
         Route::get('/specific-invoice-new/{c_id?}/{acc_id?}/{std_id?}', [AccountsController::class, 'specificStudentInvoiceCreate'])->name('accounts.invoices.student.create');
         // Route::get('/invoices-new/{c_id?}/{s_id?}/{acc_id?}/{std_id?}', [AccountsController::class, 'create'])->name('accounts.invoices.create');
-        Route::post('/invoices-student-class-filter', [AccountsController::class, 'filterStudentByClass'])->name('accounts.invoices.class.students.filter');
-    
-    
-    
+        Route::post('/invoices-student-class-filter', [AccountsController::class, 'filterStudentByClass'])->name('accounts.invoices.class.students.filter');    
         
         Route::get('generate-pdf/{id}', [AccountsController::class, 'generateInvoicePdf'])->name('accounts.invoices.pdf');
         Route::get('receipts', [AccountsController::class, 'receiptsIndex'])->name('accounts.receipts');
@@ -210,6 +207,16 @@ Route::middleware(['tenant','auth'])->group(function() {
 
         /* GET PAYMENT PARTICULARS */
         Route::post('fee-structure-master/new-master/fee-items',[PaymentSettingsController::class,'newFeeStructureStudentFeeItems'])->name('accounts.school.new.fee.structure.student.fee.items');
+
+
+
+        /* NEW INVOICE */
+        Route::get('new-invoices/create', [AccountsController::class, 'newInvoiceCreate'])->name('accounts.invoices.printouts');
+        Route::post('new-invoices/store', [AccountsController::class, 'newInvoiceStore'])->name('accounts.invoices.store');
+        Route::get('redo/invoice', [AccountsController::class, 'redoInvoiceCreate'])->name('accounts.new.invoice.redo.create');
+        Route::post('redo/invoice-store', [AccountsController::class, 'generateInvoice'])->name('accounts.new.invoice.redo.store');
+
+        Route::post('redo/query/admsion_numbers', [AccountsController::class, 'queryAdmissionNumbers'])->name('accounts.query.admsn.numbers');
 
 
       

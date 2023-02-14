@@ -354,5 +354,9 @@ public function contactPeopleDestroy(Request $request, $id){
 
 
 
+
+
+
+
   
 }

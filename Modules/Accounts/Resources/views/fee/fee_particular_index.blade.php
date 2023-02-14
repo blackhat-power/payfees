@@ -164,6 +164,8 @@
 
 $('#elevate_modal').click(function(){
 
+  $('#fee_type_modal input').val('');
+
 $('#fee_type_modal').modal('show');
 
 

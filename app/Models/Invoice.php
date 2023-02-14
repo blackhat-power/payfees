@@ -18,12 +18,11 @@ class Invoice extends Model
         'currency_id',
         'payment_terms',
         'remarks',
-        'due_date',
         'date',
         'invoice_number',
-        'fee_type_group_id',
         'class_id',
-        'season_id'
+        'season_id',
+        'student_id'
         
     ];
 
@@ -90,8 +89,8 @@ class Invoice extends Model
     {
        
 
-         if (isset(Invoice::latest()->get()[0])) {
-             $next_no = Invoice::latest()->get()[0]->id + 1;
+         if (isset(Invoice::orderBy('id','DESC')->first()->id)) {
+            $next_no = Invoice::orderBy('id','DESC')->first()->id + 1;
              return 'INVNO-' . date('Y') . '/' . Helper::add_leading_zeros($next_no);
              
         } else {
@@ -124,7 +123,15 @@ class Invoice extends Model
 
      public function getTotalInvoiceAttribute(){
 
-         return $this->invoiceItems()->where('invoice_id',$this->id)->first()->sum('rate');
+     $invoice_items = $this->invoiceItems()->where('invoice_id',$this->id)->get();
+     $total = 0;
+     foreach ($invoice_items as $key => $item) {
+
+        $total += $item->rate;   
+     }
+
+
+         return  $total;
 
      }
 
