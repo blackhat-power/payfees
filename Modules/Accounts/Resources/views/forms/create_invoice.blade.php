@@ -93,6 +93,18 @@
                             <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
                             </span>
                           </div>
+                          <div class="col-sm-3" id="by_template">
+                            <span>Generate Manually:</span>
+                           <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
+                            <option value="">Select Template</option>
+                            @foreach ($fee_master_categories as  $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
+                           </select>
+                           <span style="margin-left: 25rem; display:none " id="loader_spin" >
+                            <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
+                            </span>
+                          </div>
 
 {{-- <div class="col-sm-3">
    

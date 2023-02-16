@@ -89,6 +89,8 @@ Route::prefix('students')->group(function() {
     Route::post('student-wizard/class-stream-store',[StudentsRegistrationController::class,'studentClassPartStore'])->name('students.registration.wizard.class.stream.store');
 
     Route::post('student-wizard/fee-structure',[StudentsRegistrationController::class,'queryFeeStructure'])->name('students.registration.wizard.fee.structure');
+
+    Route::post('student-wizard/fee-structure-store',[StudentsRegistrationController::class,'studentFeeStructureStore'])->name('students.registration.wizard.fee.structure.store');
     
 
     

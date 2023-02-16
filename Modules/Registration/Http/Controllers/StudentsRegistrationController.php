@@ -1074,66 +1074,6 @@ $html = '';
        ->select('fee_master_categories.id as the_category_id','fee_master_categories.name as category_name','fee_structures.id as fee_structure_id')
        ->where('class_id',$req->class_id)
           ->groupBy('category_id')->get();
-
-
-
-
-        //   $student_id = $req->student_id;
-
-        //   // return $student_id;
-        //   $category_id = $req->category_id;
-        //   $student_fee_items = FeeStructure::join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
-        //  ->join('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
-        //  ->join('account_student_details','account_student_details.id','=','fee_structures.student_id')
-        //  ->select('fee_structures.class_id','fee_structures.category_id','amount','fee_master_particulars.name as fee_name','particular_id')
-        //   ->where('category_id',$category_id)
-        //   ->where('fee_structures.student_id',$student_id);
-  
-        //   if(is_numeric($req->class_id)){
-        //   //    $req->class_id;
-        //       $student_fee_items->where('class_id',$req->class_id);
-        //   }
-        //   $html = '';
-        //   $total = 0;
-  
-         
-        //   foreach ($student_fee_items->get() as $key => $item) {
-        //       $total += $item->amount;
-        //       $html .= '
-        //       <div class="batch total_check">
-  
-        //       <div class="div_spaces">
-        //       <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]" class="form-control checkboxes form-control-sm" checked></span>  
-        //       <span class="spaces">'.$item->fee_name .'</span>
-        //       </div>
-  
-        //       <div class="div_spaces">
-        //       <span class="spaces"> &nbsp; </span>
-        //       <span style="float:right; margin-left:3rem" class="spaces amount">  '.$item->amount.' </span>
-        //      </div>
-        //      </div>
-        //      ';
-  
-  
-        //      if($key == count($student_fee_items->get()) - 1){
-        //       $html.= '<div class="batch"> 
-        //       <div class="div_spaces">
-        //       <span class="spaces checkboxes"> </span>
-        //       <span class="spaces text-right text-bold" style="margin-left:.9rem"> <b> TOTAL </b> </span>
-        //       </div>
-        //       <div class="div_spaces">
-        //       <span class="spaces text-bold" id="total">  <b id="total_bd"> '.$total.' </b> </span>
-        //       </div>
-        //       </div>';
-          
-        //   }
-  
-        //   }
-
-
-
-
-
         
         foreach ($fee_masters as $key => $fee) {
         $total = 0;
@@ -1148,13 +1088,17 @@ $html = '';
 
             $html.= '<div class="accordion-container">
             <a href="#" class="accordion-toggle">'.$fee->category_name.'</a>
-            <div class="accordion-content">';
+            <div class="accordion-content">
+            <input type="hidden" name="category_id" value="'.$fee->category_id.'"> 
+            ';
             foreach($student_fee_items as $key=>$item){
                 $total += $item->amount;
                 $html .= '<div class="form-check">
                 <div class="batch total_check">
                       <div class="div_spaces">
-                      <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]"  class="form-check-input checkboxes" checked></span>  
+                      <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="particular_ids[]"  class="form-check-input checkboxes" checked>
+                      <input type="hidden" name="amount[]" value="'.$item->amount.'">   
+                      </span>  
                       <span class="spaces">'.$item->fee_name .'</span>
                       </div>
           
@@ -1175,9 +1119,73 @@ return response($html);
            return FeeStructure::leftjoin('fee_master_particulars','fee_master_particulars.id','=','fee_structures.particular_id')
            ->where('class_id',$req->class_id)->orderBy('amount','DESC')->groupBy('particular_id')->get();
             // return $req->all();
+        }
 
 
 
+        public function studentFeeStructureStore(Request $request){
+
+            try {
+
+
+                return $request->all();
+    
+                DB::beginTransaction();
+                $particular_id = $request->particular_id;
+                $student_category = $request->student_category;
+                $category_id = $request->select_category;
+                $description = $request->description;
+                $amount = $request->amount;
+                $response = 1;
+    
+            //     foreach($request->fee_items as $row_index=>$item){
+    
+            //       $students =  AccountSchoolDetailClass::find($class)->students;
+    
+            //         // return $students;
+            //         foreach ($students as $key => $student) {
+    
+            //         $response = FeeStructure::updateOrCreate(
+            //             [
+            //                 'id' => $request->fee_structure_id
+            //             ],
+            //             [
+            //                 'category_id'=>$category_id,
+            //                 'amount'=>$amount,
+            //                 'created_by'=>auth()->user()->id,
+            //                 'category_type'=>$student_category,
+            //                 'class_id'=>$class,
+            //                 'particular_id'=>$particular_id,
+            //                 'description'=>$description,
+            //                 'student_id'=>$student->id 
+            //             ]
+            //             );
+    
+            //         }
+            // }
+                DB::commit();
+                if ($response) {
+    
+    
+                    $data = ['state'=>'Done', 'title'=>'success', 'msg'=>'Record created'];
+    
+                     return  response($data);
+    
+                }
+    
+                $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
+                return  response($data);
+    
+            } catch (QueryException $e) {
+    
+                $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+                return  response($data);
+    
+            }
+    
+    
+    
+    
         }
 
 

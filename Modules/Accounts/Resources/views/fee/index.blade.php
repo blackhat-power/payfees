@@ -36,10 +36,10 @@
 
 
 .icon {
-        width: 12rem;
+        width: 10rem;
         height: 70px;
         text-align: center;
-        margin: 10px;
+        margin: 1rem 1px;
         display: inline-block;
       }
       .icon i {
@@ -51,6 +51,9 @@
         font-size: .9rem;
         margin-top: 10px;
       }
+      img {
+    max-width: 30%;
+}
 
 
       .container_style{
@@ -65,9 +68,6 @@
       }
 
   .box {
-  /* width: 300px;
-  height: 200px; */
-  /* margin: 50px auto; */
   border: 1px solid #ccc;
   box-shadow: 0 2px 5px #ccc;
   transition: all 0.3s ease-in-out;
@@ -101,7 +101,8 @@
                     <div class="box">
                       <a href="{{ route('accounts.school.fee.structure.master.particulars') }}">
                       <div class="icon">
-                      <i class="fas fa-heart"></i>
+                        <img src="{{asset('assets/images/tuition.png')}}" alt="">
+                      {{-- <i class="fas fa-heart"></i> --}}
                       <h6>Master Fees </h6>
                       <small>Create Master Particulars</small>
                       </div>
@@ -111,7 +112,7 @@
                   <div class="box">
                     <a href="{{ route('accounts.school.fee.structure.master.categories.index') }}">
                     <div class="icon">
-                    <i class="fas fa-camera"></i>
+                      <img src="{{asset('assets/images/fee.png')}}" alt="">
                     <h6> Create Fees </h6>
                     <small>Create Master Fees </small>
                     </div>
@@ -121,7 +122,7 @@
                   <div class="box">
                     <a href="{{ route('accounts.school.new.fee.structure') }}">
                     <div class="icon">
-                    <i class="fas fa-book"></i>
+                      <img src="{{asset('assets/images/fees.png')}}" alt="">
                     <h6> Fee Structure </h6>
                     <small>Displays fee structure for student</small>
                   </div>

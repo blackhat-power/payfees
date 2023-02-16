@@ -88,8 +88,25 @@ border-bottom: 1px solid #999;
 .structure_html{
     display: flex;
     flex-direction: horizontal;
-    margin-left: 2rem;
 }
+
+.checkboxes{
+                height: 15px;
+            }
+           
+
+             .batch{
+                display: flex;
+                direction: horizontal;
+               justify-content: space-between;
+                width: 100%;
+            }
+            .spaces{
+                padding: 0px 12px;
+            }
+            .div_spaces{
+                display: flex;
+            }
 
 
 /* COLLAPSIBLE ACCORDION */
@@ -548,6 +565,21 @@ border-bottom: 1px solid #999;
 
 @section('scripts')
 $(document).ready(function() {
+
+    $('body').on('click','.accordion-toggle', function(event){
+        console.log('clicked accordion')
+        event.preventDefault();
+        var accordion = $(this);
+        var accordionContent = accordion.next('.accordion-content');
+
+        // toggle accordion link open class
+        accordion.toggleClass("open");
+        // toggle accordion content
+        accordionContent.slideToggle(250);
+
+    });
+
+
     var currentStep = 1;
     var totalSteps = 5;
     $('.next-step').click(function() {
@@ -747,6 +779,56 @@ $(document).ready(function() {
 
 
 
+
+
+$('#finalize_btn').click(function(){
+    $(this).addClass("disabled");
+$('.loader').removeClass("d-none");
+let form = $('#trucks_info')[0];
+let form_data = new FormData(form);
+
+$.ajax({
+url: '{{route('students.registration.wizard.fee.structure.store')}}',
+type: "POST",
+    timeout: 250000,
+    processData: false,
+    contentType: false,
+    cache: false,
+    data: form_data,
+    dataType:'JSON',
+
+    success:function(response){
+        // let data = JSON.parse(response);
+    if(response.state == 'success'){
+            // $('.loader').addClass("d-none");
+    swal.fire({
+    title: response.title,
+    text: response.msg,
+    type: 'warning',
+    confirmButtonText: 'OK'
+}).then(function(result) { 
+    if (result.value) {
+        swal.showLoading();
+        setTimeout(function(){
+                $('#finalize_btn').removeClass("disabled");
+                swal.hideLoading();
+                window.location.href = "{{ route('students.registration') }}";
+            }, 100);
+    }
+});
+           
+{{-- $('.loader').addClass("d-none");
+$('#finalize_btn').removeClass('disabled'); --}}
+        }
+}
+
+});
+
+
+});
+
+
+
 function validateStep(step) {
     var isValid = true;
 
@@ -857,20 +939,8 @@ $('.attach').each(function(){
     
     });
 
-    $(document).ready(function () {
-        $('.accordion-toggle').on('click', function(event){
-            event.preventDefault();
-            // create accordion variables
-            var accordion = $(this);
-            var accordionContent = accordion.next('.accordion-content');
+     
     
-            // toggle accordion link open class
-            accordion.toggleClass("open");
-            // toggle accordion content
-            accordionContent.slideToggle(250);
-    
-        });
-    });
     
 
 
