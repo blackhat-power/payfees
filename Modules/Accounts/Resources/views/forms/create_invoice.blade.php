@@ -10,14 +10,12 @@
             <ol class="breadcrumb">
                 <li  class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">System Configurations</a></li>
-                <li class="breadcrumb-item" aria-current="page"> <a href="{{ route('accounts.school.fee.structure.master') }}"> Fee Structure Settings</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Student Fee Structures</a></li>
+                <li class="breadcrumb-item active" aria-current="page">New Invoice</a></li>
                  {{-- <li  class="breadcrumb-item"><a href="{{route('accounts.fee_structure.settings')}}">Fee Reminder Settings</a></li> --}}
                 {{-- <li class="breadcrumb-item active" aria-current="page">New</a></li> --}}
               </ol>
           </nav>
           <style>
-
             .contents{
 
                 display: flex;
@@ -82,25 +80,39 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4">
-                        <div>
-                            {{-- <span>search</span> --}}
-                            {{-- <input type="text" name="search" style="background: #87a2a1;" id="search" class="form-control form-control-sm" placeholder="search ...."> --}}
-                        </div>
 
-                    </div>
-<div class="col-md-2" style="margin-top: 1.3rem;">
-    <span style="margin-left: 25rem; display:none " id="loader_spin" >
-        <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
-        </span>
-</div>
+                        <div class="col-sm-3" id="by_template">
+                            <span>Generate By Template:</span>
+                           <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
+                            <option value="">Select Template</option>
+                            @foreach ($fee_master_categories as  $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
+                           </select>
+                           <span style="margin-left: 25rem; display:none " id="loader_spin" >
+                            <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
+                            </span>
+                          </div>
+                          <div class="col-sm-3" id="by_template">
+                            <span>Generate Manually:</span>
+                           <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
+                            <option value="">Select Template</option>
+                            @foreach ($fee_master_categories as  $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
+                           </select>
+                           <span style="margin-left: 25rem; display:none " id="loader_spin" >
+                            <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
+                            </span>
+                          </div>
 
 {{-- <div class="col-sm-3">
    
   </div> --}}
+  
              <div class="col-sm-3">
-                <div style="float:right; display:none" id="by_class">
-                    <span>Filter By Class:</span>
+                <div style="display:none" id="by_class">
+                    <span>Generate By Class:</span>
                     <select name="class_id" data-check="0" id="class_id" style="background: #87a2a1;" class="form-control form-control-sm">
                      <option value="">Select Class</option>
                      @foreach ($classes as  $class)
@@ -108,19 +120,24 @@
                      @endforeach
                     </select>
                 </div>
-                   
                   </div>
+                  <div class="col-sm-3">
+                    <div style="display:none" id="by_admn_No">
+                        <span>Generate By Admission Number:</span>
+                        <select name="admn_no" data-check="0" id="admn_no" style="background: #87a2a1;" class="form-control form-control-sm">
+                            <option value="">Select Admission Number</option>
+                            @foreach ($admn_nos as $no )
+                            <option value="{{$no->id}}">{{ $no->admission_no  }}</option>
+                            @endforeach
+                        
+                        </select>
+                    </div>
+                      </div>
+
+                  <span style="float: right; margin-top:1.1rem"><button id="create_invoice" disabled class="btn btn-sm btn-primary"> Generate Invoice   </button></span>
 
 
-                  <div class="col-sm-3" id="by_template">
-                    <span>Filter By Template:</span>
-                   <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
-                    <option value="">Select Class</option>
-                    @foreach ($fee_master_categories as  $category)
-                        <option value="{{$category->id}}">{{$category->name}}</option>
-                    @endforeach
-                   </select>
-                  </div>
+                  
 
                 
                     
@@ -231,6 +248,22 @@
 $('#class_id').change(function(){
     $('#loader_spin').removeAttr('style','display:none').css({'margin-left':'25rem'});
     $('#by_template').removeAttr('style','display:none');
+
+$.ajax({
+
+url:'{{ route('accounts.query.admsn.numbers')   }}',
+type:'POST',
+data:{
+    class_id:$(this).val()
+},
+success:function(res){
+$('#admn_no').html(res);
+console.log(res);
+
+}
+
+
+})
     
 setTimeout(function(){
     $('#loader_spin').attr('style','display:none');
@@ -281,6 +314,9 @@ console.log('clicked');
 $('#category_id').change(function(){
 let category_id =  $(this).val();
 $('#by_class').removeAttr('style','display:none');
+$('#by_admn_No').removeAttr('style','display:none');
+
+$('#create_invoice').prop('disabled',false);
 
 $('#loader_div').removeAttr('style');
 
@@ -293,7 +329,9 @@ $.ajax({
     },
     success:function(response){
 
-        $('#class_id').html(response);
+        $('#class_id').html(response.html);
+
+        $('#admn_no').html(response.admsn_nos)
 
     },
     error:function(){
@@ -324,6 +362,7 @@ let query_table = $('#query_fee_structure_table').DataTable({
         data: function (d) {
             d.class_id = $('#class_id').val();
             d.category_id = $('#category_id').val();
+            d.admission_no = $('#admn_no').val().trim();
        }
     },
 
@@ -341,6 +380,7 @@ let query_table = $('#query_fee_structure_table').DataTable({
      "drawCallback":function(){
 
         $('.edit').click(function(){
+            
 
             $('#fcategory').modal('show');
 
@@ -394,6 +434,52 @@ $('#none').click(function(){
             $(this).prop('checked',false);
         });
     
+    });
+
+    $('#admn_no').select2({
+        width:'100%'
+    })
+
+
+    $('#admn_no').change(function(e){
+        e.preventDefault();
+        {{-- console.log($(this).val()); --}}
+        $('#loader_spin').removeAttr('style','display:none').css({'margin-left':'40rem'});
+        query_table.draw();
+        setTimeout(function(){
+            $('#loader_spin').attr('style','display:none');
+
+        },800)
+
+    });
+
+
+    $('#create_invoice').click(function(){
+
+
+        {{-- alert('now more than never'); --}}
+
+        $.ajax({
+
+            url:'{{ route('accounts.new.invoice.redo.store') }}',
+            type:'POST',
+            data:{
+                template_id : $('#category_id').val(),
+                class_id : $('#class_id').val(),
+                admn_no : $('#admn_no').val(),
+            },
+            success:function(res)
+            {
+                console.log(res);
+            }
+
+
+
+        });
+
+
+
+
     });
 
 

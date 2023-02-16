@@ -27,6 +27,8 @@
       <link rel="stylesheet" href="{{ asset('assets/css/btn-toggle.css')}}"/>
       <link rel="stylesheet" href="{{ asset('assets/sweetalert2/dist/sweetalert2.css')}}"/>
       <link rel="stylesheet" href="{{ asset('jquery-ui/css/base/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
+      <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
       <link rel="stylesheet" href="{{ asset('assets/waitMe/waitMe.css') }}">
       
@@ -50,7 +52,7 @@
       <script  src="{{ asset('js/chart.js/dist/chart.min.js') }}">  </script>
 
 
-      <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>>
 
 
 
@@ -69,6 +71,19 @@
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 10px;
+
+
+}
+
+.loader_gif{
+
+  display: flex;
+  position: absolute;
+  justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+    height: 80%;
+    z-index: 9999999;
 
 
 }

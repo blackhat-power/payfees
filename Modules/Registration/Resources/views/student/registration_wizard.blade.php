@@ -85,6 +85,35 @@ padding: 8;
 border-bottom: 1px solid #999;
 }
 
+.structure_html{
+    display: flex;
+    flex-direction: horizontal;
+}
+
+.checkboxes{
+                height: 15px;
+            }
+           
+
+             .batch{
+                display: flex;
+                direction: horizontal;
+               justify-content: space-between;
+                width: 100%;
+            }
+            .spaces{
+                padding: 0px 12px;
+            }
+            .div_spaces{
+                display: flex;
+            }
+
+
+/* COLLAPSIBLE ACCORDION */
+
+
+/* END */
+
 </style>
           <nav aria-label="breadcrumb" style="width: 100%">
             <ol class="breadcrumb">
@@ -136,29 +165,22 @@ border-bottom: 1px solid #999;
     <div class="tab-content">
     <div id="step-1" class="tab-pane active">
         <!-- form 1 -->
-        <form id="step_1_form" class="form-container">
-    
-        <div class="row">
-    <div class="col-md-12">
-    <div class="loader d-none text-center">
-          <div class="spinner-border my-auto iphone-loader">
-             <span class="sr-only">Loading...</span>
-          </div>
-       </div>
-    </div> 
-    </div>
+        <form id="form-1" class="form-container">
+            <div class="loader_gif d-none">
+                <img style="max-width:15%" src="{{ asset('assets/images/cupertino_loader.gif') }}" alt="">
+            </div>
     
     <div class="row">
         <div class="col-md-4">
             <div  class="form-group">
                 <label for="">Admission Number</label>
-                <input type="text" class="form-control form-control-sm">
+                <input readonly type="text" value="1" class="form-control form-control-sm">
             </div>
         </div>
         <div class="col-md-4">
             <div  class="form-group">
                 <label for="">Admission Date</label>
-                <input type="text" name="admitted_year" id="admitted_year" class="form-control form-control-sm">
+                <input type="date" data-must="1" name="admitted_year" id="admitted_year" class="form-control form-control-sm">
             </div>
         </div>
         
@@ -168,7 +190,7 @@ border-bottom: 1px solid #999;
         <div class="col-md-4">
             <div class="form-group">
                 <label for="First Name">First Name: <span class="required"></span></label>
-                <input type="text" name="first_name" class="form-control form-control-sm" id="first_name">
+                <input data-must="1" type="text" name="first_name" class="form-control form-control-sm" id="first_name">
                 <input type="hidden" name="stdnt_id" id="stdnt_id" class="form-control form-control-sm">
                 
              </div>
@@ -183,7 +205,7 @@ border-bottom: 1px solid #999;
         <div class="col-md-4">
             <div class="form-group">
                 <label for="Last Name">Last Name: <span class="required"></span></label>
-                <input type="text" name="last_name" class="form-control form-control-sm" id="last_name">
+                <input data-must="1" type="text" name="last_name" class="form-control form-control-sm" id="last_name">
              </div>
         </div>
     </div>
@@ -191,14 +213,14 @@ border-bottom: 1px solid #999;
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="Address">Address: <span class="required"></span></label>
+                <label for="Address">Address:</label>
                 <input type="text" name="address" id="std_address" class="form-control form-control-sm" id="address">
                 <input type="hidden" name="std_address_id" id="std_address_id">
              </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="Phone">Phone: <span class="required"></span></label>
+                <label for="Phone">Phone:</label>
                 <input type="text" name="phone" id="std_phone" class="form-control form-control-sm" id="phone">
                 <input type="hidden" name="std_contact_id" id="std_contact_id" class="form-control form-control-sm" id="phone">
              </div>
@@ -208,7 +230,7 @@ border-bottom: 1px solid #999;
 
         <div class="col-md-4">
             <div class="form-group">
-                <label for="Email">Email: <span class="required"></span></label>
+                <label for="Email">Email: </label>
                 <input type="email" name="email" id="std_email" class="form-control form-control-sm" id="email">
                 <input type="hidden" name="std_email_id" id="std_email_id">
 
@@ -220,55 +242,33 @@ border-bottom: 1px solid #999;
         <div class="col-md-4">
             <div class="form-group">
                 <label for="Date of Birth">Date of Birth: <span class="required"></span></label>
-                <input type="date" name="dob" id="std_dob" class="form-control form-control-sm" id="dob">
+                <input data-must="1" type="date" name="dob" id="std_dob" class="form-control form-control-sm" id="dob">
              </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 <label for="Gender">Gender: <span class="required"></span></label>
-                <select name="gender" id="std_gender" class="form-control form-control-sm" id="">
+                <select data-must="1" name="gender" id="std_gender" class="form-control form-control-sm" id="">
                     <option value="male">male</option>
                     <option value="female">female</option>
                 </select>
              </div>
         </div>
-
-        {{-- <div class="col-md-4">
-            <div class="form-group">
-                <label for="Class">Class: <span class="required"></span></label>
-                <select name="students_class" id="class_select" style="width: 100%" class="class_select form-control form-control-sm">
-                    @foreach ($classes as $class )
-                    <option value="{{$class->id}}">{{$class->name}}</option>
-                    @endforeach
-                </select>
-             </div>
-        </div> --}}
-
-        {{-- <div class="col-md-4">
-            <div class="form-group">
-                <label for="streams">Stream:</label>
-                <select name="students_stream" id="stream_select" style="width: 100%" class="class_select form-control form-control-sm">
-                    @foreach ($streams as $stream )
-                    <option value="{{$stream->id}}">{{$stream->name}}</option>
-                    @endforeach
-                </select>
-             </div>
-        </div> --}}
         <div class="col-md-4">
             <div class="form-group">
                 <label for="">Category <span class="required"></span></label>
-                <select name="student_category" id="student_category" class="form-control form-control-sm class_select">
-                    <option value="">Category 1</option>
-                    <option value="">Category 2</option>
+                <select data-must="1" name="student_category" id="student_category" class="form-control form-control-sm class_select">
+                    <option value="1">BASIC</option>
+                    <option value="2">STAFF</option>
                 </select>
              </div>
         </div>
 
     </div>
 
-    <span style="float:right">
+    {{-- <span style="float:right">
     <button type="button" id="portal_sbmit" style="background-color:#04476a !important"  class=" wizard_btns btn btn-sm btn-primary next-step"> <i class="fa fa-tick"></i>Next</button>
-    </span>
+    </span> --}}
     
     </form>
     
@@ -276,21 +276,12 @@ border-bottom: 1px solid #999;
     
     
     <!-- STEP TWO -->
-    
-    
     <div id="step-2" class="tab-pane">
     
-    <form id="contact_person_form" class="form-container">
-    
-    <div class="row">
-    <div class="col-md-12">
-    <div class="loader d-none text-center">
-          <div class="spinner-border my-auto iphone-loader">
-             <span class="sr-only">Loading...</span>
-          </div>
-       </div>
-    </div> 
-    </div>
+    <form id="form-2" class="form-container">
+        <div class="loader_gif d-none">
+            <img style="max-width:15%" src="{{ asset('assets/images/cupertino_loader.gif') }}" alt="">
+        </div>
     
     <div id="contact_person_details_div">
         <div class="row">
@@ -300,6 +291,7 @@ border-bottom: 1px solid #999;
                     <input type="text" name="father_name" class="form-control form-control-sm" id="fname">
                     <input type="hidden" name="father_contact_id" id="father_contact_id">
                     <input type="hidden" name="father_id" id="father_id">
+                    <input type="hidden" name="student_id" id="student_id" class="student_id">
 
                  </div>
             </div>
@@ -368,10 +360,10 @@ border-bottom: 1px solid #999;
          </div>
                        
     </form>
-                    <span style="float:right">
+                    {{-- <span style="float:right">
                     <!-- <button type="button" class=" wizard_btns btn btn-secondary btn-sm prev-step">Prev</button> -->
         <button type="button" style="background-color:#04476a !important;" class=" wizard_btns btn btn-primary btn-sm next-step">Next</button>
-                </span>
+                </span> --}}
     
     </div>
 
@@ -380,24 +372,17 @@ border-bottom: 1px solid #999;
     {{-- NEW STEP 3 --}}
 
     <div id="step-3" class="tab-pane">
-    
-        <form id="trucks_info" action="" class="form-container" >
-    
-        <div class="row">
-    <div class="col-md-12">
-    <div class="loader  text-center">
-          <div class="spinner-border my-auto iphone-loader">
-             <span class="sr-only">Loading...</span>
-          </div>
-       </div>
-    </div> 
-    </div>
-        <div class="row" id="contact_person_details_div">
-    
+        <form id="form-3" action="" class="form-container" >
+            <div class="loader_gif d-none">
+                <img style="max-width:15%" src="{{ asset('assets/images/cupertino_loader.gif') }}" alt="">
+            </div>
+            
+        <div class="row" id="form-3_div">
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Class">Class:</label>
-                    <select name="students_class" id="class_select" style="width: 100%" class="class_select form-control form-control-sm">
+                    <select data-must="1" name="students_class" id="class_select" style="width: 100%" class="class_select form-control form-control-sm" required>
+                        <option value="">Select Class</option>
                         @foreach ($classes as $class )
                         <option value="{{$class->id}}">{{$class->name}}</option>
                         @endforeach
@@ -409,17 +394,19 @@ border-bottom: 1px solid #999;
                 <div class="form-group">
                     <label for="streams">Stream:</label>
                     <select name="students_stream" id="stream_select" style="width: 100%" class="class_select form-control form-control-sm">
+                        <option value="">Select Stream</option>
                         @foreach ($streams as $stream )
                         <option value="{{$stream->id}}">{{$stream->name}}</option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="student_id" id="student_id" class="student_id">
                  </div>
             </div>
     </div>
-        <span style="float: right;">
+        {{-- <span style="float: right;">
         <!-- <button type="button" class=" wizard_btns btn btn-secondary btn-sm prev-step">Prev</button> -->
         <button type="button" style="background-color:#04476a !important;" class=" wizard_btns btn btn-primary btn-sm next-step">Next</button>
-        </span> 
+        </span>  --}}
         </form>
     </div>
     
@@ -441,6 +428,7 @@ border-bottom: 1px solid #999;
             <td>
             <button id="btn-1" type="button" class="btn btn-sm btn-warning status_btn"> <i class="fa-sharp fa-solid fa-circle-xmark"></i> Not Attached    </button>
             <input type="hidden" name="to_next" id="to_next">
+            <input type="hidden" name="student_id" id="student_id" class="student_id">
         </td>
             <td> <button type="button" class="btn btn-sm btn-sbmt text-white attach"  data-title="TIN" style="font-size: 0.77rem; height:25px"> Attach </button>  </td>
           </tr>
@@ -450,26 +438,18 @@ border-bottom: 1px solid #999;
             <button id="btn-2" type="button" class="btn btn-sm btn-warning status_btn"> <i class="fa-sharp fa-solid fa-circle-xmark"></i> Not Attached    </button>
             </td>
             <td> <button type="button"  class="btn btn-sm btn-sbmt text-white attach" data-title="Truck Card" style="font-size: 0.77rem; height:25px"> Attach </button> </td>
-          </tr>
-          <tr class="att_cover">
-            <td class="attach_type">Driving License / NIDA / Voters ID</td>
-            <td>
-            <button id="btn-3" type="button" class="btn btn-sm btn-warning status_btn"> <i class="fa-sharp fa-solid fa-circle-xmark"></i> Not Attached    </button>
-            </td>
-            <td> <button type="button" class="btn btn-sm btn-sbmt text-white attach" data-title="Driving License / NIDA / Voters ID" style="font-size: 0.77rem; height:25px"> Attach </button>  </td>
-          </tr>
-        
+          </tr>        
           </tr>
         </table>
         <span class="text-danger" id="attachment_error" style="float: left; margin-top:1rem">
         
         
         </span>
-        <span style="float: right;">
+        {{-- <span style="float: right;">
         <!-- <button type="button" class=" wizard_btns btn btn-secondary btn-sm prev-step">Prev</button> -->
         <button type="button" style="background-color:#04476a !important;" class=" wizard_btns btn btn-primary btn-sm next-step">Next</button>
         
-        </span>
+        </span> --}}
           
         </div>
     
@@ -479,7 +459,7 @@ border-bottom: 1px solid #999;
     
     <div id="step-5" class="tab-pane">
     
-        <form id="trucks_info" action="" class="form-container" >
+        <form id="form-5" action="" class="form-container" >
     
         <div class="row">
     <div class="col-md-12">
@@ -490,7 +470,7 @@ border-bottom: 1px solid #999;
        </div>
     </div> 
     </div>
-        <div class="row" id="contact_person_details_div">
+        <div class="row" id="settings_part">
             <div class="col-md-12">
 
                 <table class="table">
@@ -504,29 +484,28 @@ border-bottom: 1px solid #999;
                     <td> <input id="student_is_sms_checked" name="student[is_sms_enabled]" type="checkbox">  </td>
                     </tr>
 
-                    <img align="absmiddle" alt="Loader" border="0" id="loader2" src="/images/loader.gif?60630d2a1025b2d1855181295e0dc963" style="display: none;">
-                    
-
-
-
-
+                    {{-- <img align="absmiddle" alt="Loader" border="0" id="loader2" src="/images/loader.gif?60630d2a1025b2d1855181295e0dc963" style="display: none;"> --}}
                 </table>
-
-
             </div>
     <div class="col-md-4">
         <div class="form-group">
-            <label for="">Settings Part<span class="required"></span></label>
             <input type="hidden" name="client_id" class="client_id">
-            <input type="number" id="no_of_trucks" name="no_of_trucks" class="form-control form-control-sm"  >
+            <input type="hidden" name="class_id" id="class_id" class="class_id">
+            <input type="hidden" name="student_id" id="student_id" class="student_id">
         </div>
         
     </div>
+
     </div>
-        <span style="float: right;">
-        <!-- <button type="button" class=" wizard_btns btn btn-secondary btn-sm prev-step">Prev</button> -->
-        <button type="button" id="finalize_btn" class=" wizard_btns btn btn-sm btn-success">Finish</button>
-        </span> 
+    <span style="text-align: center"> <p style="font-size: .8rem;
+        color: darkslateblue;
+        background: #e1e1e1;"> Assigned Fees Structure For Student  </p>  </span>
+
+        <div class="structure_html">
+            <div id="innerHTML"></div>
+
+    </div>
+   
         </form>
     </div>
     <!-- </form> -->
@@ -535,6 +514,14 @@ border-bottom: 1px solid #999;
     </div>
     
     ​</div>
+
+    <div class="card-footer">
+        <span style="float: right;">
+            <!-- <button type="button" class=" wizard_btns btn btn-secondary btn-sm prev-step">Prev</button> -->
+            <button type="button" id="finalize_btn" class=" wizard_btns btn btn-sm btn-success d-none">Finish</button>
+                <button type="button" style="background-color:#04476a !important;" class=" wizard_btns btn btn-primary btn-sm next-step">Next</button>
+            </span>
+    </div>
     
     </div>
             
@@ -546,7 +533,7 @@ border-bottom: 1px solid #999;
           <div class="modal-header">
             <h5 class="modal-title">Modal title</h5>
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
+              <span aria-hidden="1">&times;</span>
             </button>
           </div>
           <div class="modal-body">
@@ -577,27 +564,37 @@ border-bottom: 1px solid #999;
 @endsection
 
 @section('scripts')
+$(document).ready(function() {
+
+    $('body').on('click','.accordion-toggle', function(event){
+        console.log('clicked accordion')
+        event.preventDefault();
+        var accordion = $(this);
+        var accordionContent = accordion.next('.accordion-content');
+
+        // toggle accordion link open class
+        accordion.toggleClass("open");
+        // toggle accordion content
+        accordionContent.slideToggle(250);
+
+    });
+
 
     var currentStep = 1;
     var totalSteps = 5;
-
     $('.next-step').click(function() {
         
      if (validateStep(currentStep)) {
-
-            console.log('tunafika');
-
-            {{--    $(this).addClass("disabled"); --}}
-
-            $('#step-' + currentStep).removeClass('active')
+            $(this).addClass("disabled"); 
+            {{-- $('#step-' + currentStep).removeClass('active') --}}
             $('#step-' + currentStep).find('.font_icon').removeClass('d-none');
-
-            {{-- if(currentStep == 1){
-                let form = $('#step_1_form')[0];
+            if(currentStep == 1){
+                let form = $('#form-1')[0];
                 let form_data = new FormData(form);
-                $('.loader').removeClass("d-none"); --}}
-                {{-- $.ajax({
-                     url: '',
+                $('.loader_gif').removeClass("d-none"); 
+                {{-- cupertino_loader.gif --}}
+                 $.ajax({
+                     url: '{{ route('students.registration.wizard.store')  }}',
                    type: "POST",
                       timeout: 250000,
                     processData: false,
@@ -607,23 +604,32 @@ border-bottom: 1px solid #999;
                     dataType:'JSON',
 
                      success:function(response){
-                        $('.loader').addClass("d-none");
+                        $('.loader_gif').addClass("d-none");
                         $('.next-step').removeClass('disabled');
-                        let client_id = response.client_id;
-                                console.log(client_id);
-                                $('.client_id').val(client_id);
-            }
-        }) --}}
-            {{-- } --}}
+                        $('.student_id').val(response.student.id);
+                        if(response.state=='Done'){
+                        $('#step-' + currentStep).removeClass('active');
+                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('success_bg').addClass('text-white');
+                        $('#step-nav a[href="#step-' + currentStep + '"]').find('.font_icon').removeClass('d-none').addClass('text-white');
+                        currentStep++;
+                        $('#step-' + currentStep).addClass('active');
+                        $('.nav-link').removeClass('active');
+                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('active'); 
 
-            {{-- if(currentStep == 2){
+                        
+                        }
+                    }
+             
+        })
+    } 
+             if(currentStep == 2){
                 $(this).addClass("disabled");
-                $('.loader').removeClass("d-none");
-                let form = $('#contact_person_form')[0];
-                let form_data = new FormData(form); --}}
+                $('.loader_gif').removeClass("d-none");
+                let form = $('#form-2')[0];
+                let form_data = new FormData(form); 
 
-                        {{-- $.ajax({
-                            url: '',
+                         $.ajax({
+                            url: '{{  route('students.registration.wizard.contact_person.store') }}',
                         type: "POST",
                             timeout: 250000,
                             processData: false,
@@ -633,30 +639,133 @@ border-bottom: 1px solid #999;
                             dataType:'JSON',
 
                             success:function(response){
-                                $('.loader').addClass("d-none");
-                                $('.next-step').removeClass('disabled');
-                               console.log(response);
+                                $('.loader_gif').addClass("d-none");
+                                $('.next-step').removeClass('disabled'); 
+                             
+                                    if(response.state=='Done'){
+                                        $('#step-' + currentStep).removeClass('active');
+                                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('success_bg').addClass('text-white');
+                                        $('#step-nav a[href="#step-' + currentStep + '"]').find('.font_icon').removeClass('d-none').addClass('text-white');
+                                        currentStep++;
+                                        $('#step-' + currentStep).addClass('active');
+                                        $('.nav-link').removeClass('active');
+                                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('active'); 
+                                        }
+                             
                         }
-                        }) --}}
+                        });
+                    } 
             
 
-            $('#step-nav a[href="#step-' + currentStep + '"]').addClass('success_bg').addClass('text-white');
-            $('#step-nav a[href="#step-' + currentStep + '"]').find('.font_icon').removeClass('d-none').addClass('text-white');
-            
-            currentStep++;
+                    if(currentStep == 3){
+                        $(this).addClass("disabled");
+                        $('.loader_gif').removeClass("d-none");
+                        let form = $('#form-3')[0];
+                        let form_data = new FormData(form); 
+                                 $.ajax({
+                                    url: '{{  route('students.registration.wizard.class.stream.store') }}',
+                                type: "POST",
+                                    timeout: 250000,
+                                    processData: false,
+                                    contentType: false,
+                                    cache: false,
+                                    data: form_data,
+                                    dataType:'JSON',
+        
+                                    success:function(response){
+                                        {{-- console.log('now response',response); --}}
+                                        $('.loader_gif').addClass("d-none");
+                                        $('.next-step').removeClass('disabled'); 
+                                            if(response.state=='Done'){
+                                                $('.class_id').val(response.class_id);
+                                                $('#step-' + currentStep).removeClass('active');
+                                                $('#step-nav a[href="#step-' + currentStep + '"]').addClass('success_bg').addClass('text-white');
+                                                $('#step-nav a[href="#step-' + currentStep + '"]').find('.font_icon').removeClass('d-none').addClass('text-white');
+                                                currentStep++;
+                                                $('#step-' + currentStep).addClass('active');
+                                                $('.nav-link').removeClass('active');
+                                                $('#step-nav a[href="#step-' + currentStep + '"]').addClass('active'); 
+                                                }
+                                        
+                                       {{-- console.log(response); --}}
+                                }
+                                });
+                            }
 
-    console.log(currentStep);
+                            if(currentStep == 4){
+                                $(this).addClass("disabled");
+                                $('.loader_gif').removeClass("d-none");
+                                let form = $('#form-2')[0];
+                                let form_data = new FormData(form); 
+                
+                                         $.ajax({
+                                            url: '{{  route('students.registration.wizard.contact_person.store') }}',
+                                        type: "POST",
+                                            timeout: 250000,
+                                            processData: false,
+                                            contentType: false,
+                                            cache: false,
+                                            data: form_data,
+                                            dataType:'JSON',
+                
+                                            success:function(response){
+                                                $('.loader_gif').addClass("d-none");
+                                                $('.next-step').removeClass('disabled'); 
+                                                
+                                                    if(response.state='Done'){
+                                                        $('#step-' + currentStep).removeClass('active');
+                                                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('success_bg').addClass('text-white');
+                                                        $('#step-nav a[href="#step-' + currentStep + '"]').find('.font_icon').removeClass('d-none').addClass('text-white');
+                                                        currentStep++;
+                                                        $('#step-' + currentStep).addClass('active');
+                                                        $('.nav-link').removeClass('active');
+                                                        $('#step-nav a[href="#step-' + currentStep + '"]').addClass('active'); 
 
-            $('#step-' + currentStep).addClass('active');
-            $('.nav-link').removeClass('active');
-            $('#step-nav a[href="#step-' + currentStep + '"]').addClass('active');
+                                                        $('#finalize_btn').removeClass('d-none');
+                                                        $('.next-step').addClass('d-none');
+
+
+
+                                                        {{-- QUERY FEE STRUCTURE --}}
+
+                                                        $.ajax({
+
+                                                            url:"{{ route('students.registration.wizard.fee.structure')  }}",
+                                                            type:"POST",
+                                                            data:{
+                                                                class_id : $('.class_id').val()
+                                                            },
+                                                            success:function(response){
+                                                                console.log(response)
+                                                                $('.structure_html').html(response);
+
+                                                            },
+                                                            error:function(response){
+
+                                                                console.log(response);
+                                                                
+                                                            }
+
+
+
+                                                        });
+
+
+
+                                                        }
+                                               
+                                        }
+                                        });
+                                    }
+
+
+
+
         }
 
-    });
-
-
-
-
+    })
+    
+});
 
     $('.prev-step').click(function() {
     if(currentStep > 1) {
@@ -670,27 +779,83 @@ border-bottom: 1px solid #999;
 
 
 
+
+
+$('#finalize_btn').click(function(){
+    $(this).addClass("disabled");
+$('.loader').removeClass("d-none");
+let form = $('#trucks_info')[0];
+let form_data = new FormData(form);
+
+$.ajax({
+url: '{{route('students.registration.wizard.fee.structure.store')}}',
+type: "POST",
+    timeout: 250000,
+    processData: false,
+    contentType: false,
+    cache: false,
+    data: form_data,
+    dataType:'JSON',
+
+    success:function(response){
+        // let data = JSON.parse(response);
+    if(response.state == 'success'){
+            // $('.loader').addClass("d-none");
+    swal.fire({
+    title: response.title,
+    text: response.msg,
+    type: 'warning',
+    confirmButtonText: 'OK'
+}).then(function(result) { 
+    if (result.value) {
+        swal.showLoading();
+        setTimeout(function(){
+                $('#finalize_btn').removeClass("disabled");
+                swal.hideLoading();
+                window.location.href = "{{ route('students.registration') }}";
+            }, 100);
+    }
+});
+           
+{{-- $('.loader').addClass("d-none");
+$('#finalize_btn').removeClass('disabled'); --}}
+        }
+}
+
+});
+
+
+});
+
+
+
 function validateStep(step) {
-var isValid = true;
-{{-- if(step == 3){ --}}
+    var isValid = true;
+
+if(step == 4){
+
+    return isValid;
 {{-- let btn1_text = $('#btn-1').text().trim();
 let btn2_text = $('#btn-2').text().trim();
 let btn3_text = $('#btn-3').text().trim();
 
 console.log('btn_1_text' + btn1_text)
 console.log('btn_2_text' + btn2_text)
-console.log('btn_3_text' + btn3_text)
+console.log('btn_3_text' + btn3_text) --}}
 
-if(btn1_text == 'Attached' && btn2_text == 'Attached' && btn3_text == 'Attached' ){
+{{-- if(btn1_text == 'Attached' || btn1_text =='Imeambatanishwa' && btn2_text == 'Attached' || btn2_text == 'Imeambatanishwa' && btn3_text == 'Attached' || btn3_text == 'Imeambatanishwa' ){
     $('#to_next').val(1);
-    $('#attachment_error').text('Tumesave');
+   return isValid;
 }else{
     $('#to_next').val('');
-    $('#attachment_error').html('<i class="fa-regular fa-circle-exclamation"></i>  Please make sure you have provided all required attachments');
-}
+    isValid = false;
+    $('#attachment_error').html('<i class="fa-solid fa-circle-exclamation"></i> &nbsp; <?= $this->lang->line('error_attachment_upload') ?>');
 } --}}
-    $('#step-' + step + ' input[type="text"] ').each(function() {
-        if (!$(this).val()) {
+}else{
+
+    let elements = $("#form-" + step).find("input, select");
+   elements.each(function() {
+        if ( $(this).data('must') &&  !$(this).val()) {
             isValid = false;
             $(this).addClass('is-invalid');
         }
@@ -699,8 +864,16 @@ if(btn1_text == 'Attached' && btn2_text == 'Attached' && btn3_text == 'Attached'
         }
     });
     return isValid;
-
 }
+}
+
+
+
+{{-- var $j = jQuery.noConflict();
+$j(document).ready(function() {
+  $j("#admitted_year").datepicker();
+}); --}}
+
 
 
 $('.attach').each(function(){
@@ -762,8 +935,13 @@ $('.attach').each(function(){
         }); --}}
     
     }
+
     
     });
+
+     
+    
+    
 
 
 @endsection

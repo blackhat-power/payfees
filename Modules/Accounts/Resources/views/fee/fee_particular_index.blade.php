@@ -10,6 +10,7 @@
             <ol class="breadcrumb">
                 <li  class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">System Configurations</a></li>
+                <li class="breadcrumb-item" aria-current="page"> <a href="{{ route('accounts.school.fee.structure.master') }}"> Fee Structure Settings </a></li>
                 <li class="breadcrumb-item active" aria-current="page">Fee</a></li>
                  {{-- <li  class="breadcrumb-item"><a href="{{route('accounts.fee_structure.settings')}}">Fee Reminder Settings</a></li> --}}
                 {{-- <li class="breadcrumb-item active" aria-current="page">New</a></li> --}}
@@ -163,6 +164,8 @@
 
 
 $('#elevate_modal').click(function(){
+
+  $('#fee_type_modal input').val('');
 
 $('#fee_type_modal').modal('show');
 

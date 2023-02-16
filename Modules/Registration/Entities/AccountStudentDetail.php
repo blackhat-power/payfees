@@ -11,6 +11,7 @@ use App\Models\ReceiptItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Modules\Accounts\Entities\FeeStructure;
 use Modules\Accounts\Entities\FeeStructureItem;
 use Modules\Configuration\Entities\AccountSchoolDetail;
 use Modules\Configuration\Entities\AccountSchoolDetailClass;
@@ -21,6 +22,7 @@ class AccountStudentDetail extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'account_id',
         'account_school_details_id',
         'first_name',
@@ -35,7 +37,8 @@ class AccountStudentDetail extends Model
         'profile_pic',
         'graduation_date',
         'admitted_year',
-        'session'
+        'session',
+        'admission_no'
 
         
     ];
@@ -53,6 +56,12 @@ class AccountStudentDetail extends Model
 
     public function feeStructureItems(){
         return $this->hasMany(FeeStructureItem::class,'student_id');
+
+    }
+
+
+    public function feeStructures(){
+        return $this->hasMany(FeeStructure::class,'student_id');
 
     }
 

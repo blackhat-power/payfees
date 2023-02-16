@@ -80,6 +80,19 @@ Route::prefix('students')->group(function() {
     Route::get('student-invoices-list/{id}',[StudentsProfileController::class,'studentInvoiceList'])->name('student.profile.view.invoices');
     Route::post('student-update-status',[StudentsProfileController::class,'studentUpdateStatus'])->name('student.update.status');
 
+
+
+    /* STUDENTS NEW WIZARD STORE */
+
+    Route::post('student-wizard-store',[StudentsRegistrationController::class,'studentWizardStore'])->name('students.registration.wizard.store');
+    Route::post('student-wizard/contact-person-store',[StudentsRegistrationController::class,'studentWizardContactPersonStore'])->name('students.registration.wizard.contact_person.store');
+    Route::post('student-wizard/class-stream-store',[StudentsRegistrationController::class,'studentClassPartStore'])->name('students.registration.wizard.class.stream.store');
+
+    Route::post('student-wizard/fee-structure',[StudentsRegistrationController::class,'queryFeeStructure'])->name('students.registration.wizard.fee.structure');
+
+    Route::post('student-wizard/fee-structure-store',[StudentsRegistrationController::class,'studentFeeStructureStore'])->name('students.registration.wizard.fee.structure.store');
+    
+
     
 });
 

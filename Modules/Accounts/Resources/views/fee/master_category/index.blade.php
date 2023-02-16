@@ -10,6 +10,7 @@
             <ol class="breadcrumb">
                 <li  class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">System Configurations</a></li>
+                <li class="breadcrumb-item" aria-current="page"> <a href="{{route('accounts.school.fee.structure.master')}}"> Fee Structure Settings</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Fee</a></li>
                  {{-- <li  class="breadcrumb-item"><a href="{{route('accounts.fee_structure.settings')}}">Fee Reminder Settings</a></li> --}}
                 {{-- <li class="breadcrumb-item active" aria-current="page">New</a></li> --}}
@@ -54,13 +55,50 @@
             .spaces{
                 padding: 0px 12px;
             }
-/*
-            .batch_container{
 
-                width: 200
+            .icon {
+        width: 10rem;
+        height: 70px;
+        text-align: center;
+        margin: 1rem 1px;
+        display: inline-block;
+      }
+      .icon i {
+        font-size: 40px;
+        color: #333;
+        margin-top: 15px;
+      }
+      .icon span {
+        font-size: .9rem;
+        margin-top: 10px;
+      }
+      img {
+    max-width: 30%;
+}
 
 
-            } */
+.box {
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px #ccc;
+  transition: all 0.3s ease-in-out;
+}
+
+.box:hover {
+  border: 2px solid #04476a;
+  box-shadow: 0 4px 10px #04476a;
+  transform: translateY(-2px);
+}
+
+.container_style{
+
+display: flex;
+direction: horizontal;
+justify-content: space-around;
+width: 100%;
+margin-bottom:2rem;
+
+
+}
 
 
           </style>
@@ -79,20 +117,30 @@
         <div class="card-body">
 
             <div class="container">
-                <div class="row">
-                  <div class="col-sm-3">
-                    <i class="fas fa-heart"></i>
-                    <h3> <a href="javascript:void(0)" id="fee_category">Create Category</a> </h3>
-                    <small>Create Master Particulars</small>
-                  </div>
-                  <div class="col-sm-3">
-                    <i class="fas fa-camera"></i>
-                    <h3> <a href="{{ route('accounts.school.fee.structure.patcl.index') }}">Create Particulars</a> </h3>
-                    <small>Create Category Particulars </small>
-                    
-                  </div>
-                  
+
+            <div class="container">
+              <div class="container_style">
+              <div class="box">
+                <a href="javascript:void(0)" id="fee_category">
+                <div class="icon">
+                  <img src="{{asset('assets/images/category_fee.png')}}" alt="">
+                <h6>Fee Master Category </h6>
+                <small>Create Fee Master Categories</small>
                 </div>
+                </a>
+            </div>
+
+            <div class="box">
+              <a href="{{ route('accounts.school.fee.structure.patcl.index') }}">
+              <div class="icon">
+                <img src="{{asset('assets/images/fee.png')}}" alt="">
+              <h6> Fee Particulars </h6>
+              <small>Create Category Fee Items </small>
+              </div>
+            </a>
+              </div>
+          </div>
+          </div>
               </div>
 
 

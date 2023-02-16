@@ -546,6 +546,7 @@ return '<nobr>'.$button. '</nobr>';
               $students =  AccountSchoolDetailClass::find($class)->students;
 
                 // return $students;
+                foreach ($students as $key => $student) {
 
                 $response = FeeStructure::updateOrCreate(
                     [
@@ -558,32 +559,35 @@ return '<nobr>'.$button. '</nobr>';
                         'category_type'=>$student_category,
                         'class_id'=>$class,
                         'particular_id'=>$particular_id,
-                        'description'=>$description
+                        'description'=>$description,
+                        'student_id'=>$student->id 
                     ]
                     );
 
+                }
+
                     // str_replace(',','',$request->amounts[$col_index]),
 
-                    foreach ($students as $key => $student) {
-                        # code...
-                        if($student->id == 5){
+            //         foreach ($students as $key => $student) {
+            //             # code...
+            //             if($student->id == 5){
 
-                            $fee_structure_item = FeeStructureItem::updateOrCreate(
+            //                 $fee_structure_item = FeeStructureItem::updateOrCreate(
 
-                                [
-                                    'id' => $request->fee_structure_id
-                                ],
-                                [
-                                    'fee_structure_id'=> $response->id ,
-                                    'student_id'=>$student->id  
-                                ]
+            //                     [
+            //                         'id' => $request->fee_structure_id
+            //                     ],
+            //                     [
+            //                         'fee_structure_id'=> $response->id ,
+            //                         'student_id'=>$student->id  
+            //                     ]
         
-                                );
-                        }
-            }
+            //                     );
+            //             }
+            // }
         }
             DB::commit();
-            if ($fee_structure_item) {
+            if ($response) {
 
 
                 $data = ['state'=>'Done', 'title'=>'success', 'msg'=>'Record created'];
@@ -625,13 +629,15 @@ return '<nobr>'.$button. '</nobr>';
     public function newFeeStructureDatatable(Request $request){
 
         $class_id = $request->class_id;
+        $admn_no = $request->admission_no;
+
+        
 
         //  return $class_id;
 
-        $students = FeeStructure::leftjoin('fee_structure_items','fee_structure_items.fee_structure_id','=','fee_structures.id')
-        ->join('account_student_details','account_student_details.id','=','fee_structure_items.student_id')
+        $students = FeeStructure::join('account_student_details','account_student_details.id','=','fee_structures.student_id')
         ->join('fee_master_categories','fee_structures.category_id','=','fee_master_categories.id')
-        ->select(DB::raw("SUM(fee_structures.amount) as total_amount"),'fee_master_categories.id as category_id', 'fee_structure_items.student_id','fee_structures.amount','account_student_details.*')
+        ->select(DB::raw("SUM(fee_structures.amount) as total_amount"),'fee_master_categories.id as category_id','fee_structures.amount','account_student_details.*')
         ->groupBy(['account_student_details.id'])
         ;
 
@@ -678,6 +684,12 @@ if (!empty($request->get('category_id'))) {
 
     }
 
+    if (! empty($admn_no)) {
+        $students = $students->where('account_student_details.id',$admn_no);
+    
+        }
+
+
 
 
 // return $students->get();
@@ -691,13 +703,13 @@ if (!empty($request->get('category_id'))) {
     }) 
 
     ->addColumn('fee',function($student){
-        return $student->total_amount;
+        return number_format($student->total_amount);
     }) 
 
       ->addColumn('action', function($student){
         $button = '';
-                   $button .= '  <a href="javascript:void(0)" data-edit_id="'.$student->student_id.'" class="edit button-icon button btn btn-sm rounded-small btn-success  more-details-1"><i class="fa fa-eye m-0"></i></a>';
-                   $button .= ' <a href="javascript:void(0)" data-delete_id="'.$student->student_id.'"  data-original-title="Delete" data-fee_dlt_id=""  data-toggle="tooltip" class=" delete button-icon button btn btn-sm rounded-small btn-danger  fee-structure-delete" ><i class="fa fa-trash  m-0"></i></a>';
+                   $button .= '  <a href="javascript:void(0)" data-edit_id="'.$student->id.'" class="edit button-icon button btn btn-sm rounded-small btn-success  more-details-1"><i class="fa fa-eye m-0"></i></a>';
+                   $button .= ' <a href="javascript:void(0)" data-delete_id="'.$student->id.'"  data-original-title="Delete" data-fee_dlt_id=""  data-toggle="tooltip" class=" delete button-icon button btn btn-sm rounded-small btn-danger  fee-structure-delete" ><i class="fa fa-trash  m-0"></i></a>';
              
         return '<nobr>'.$button. '</nobr>';
         })
@@ -708,20 +720,32 @@ if (!empty($request->get('category_id'))) {
 
     public function newFeeStructureCategoryClasses(Request $req){
 
-        $html = '<option> Filter By Class </option>';
+        $html = '<option>  </option>';
+        $admsn_nos = '<option> </option>';
         $category_id = $req->category_id;
-       $master_category_classes = FeeMasterCategoryClass::join('account_school_detail_classes','account_school_detail_classes.id','=','fee_master_category_classes.class_id')
+     $master_category_classes = FeeMasterCategoryClass::join('account_school_detail_classes','account_school_detail_classes.id','=','fee_master_category_classes.class_id')
         ->where('fee_master_category_id',$category_id)
         ->get();
+
+        $fee_master_category_students = FeeMasterCategoryClass::join('account_school_detail_classes','account_school_detail_classes.id','=','fee_master_category_classes.class_id')
+        ->join('account_student_details','account_student_details.account_school_details_class_id','=','account_school_detail_classes.id')
+         ->where('fee_master_category_id',$category_id)
+         ->get();
 
         foreach ($master_category_classes as $key => $master) {
             # code...
             $html .= '<option value="'.$master->class_id.'"> '.$master->name.'  </option>';
-
         }
 
+        foreach ($fee_master_category_students as $key => $master) {
+            $admsn_nos .= '<option value="'.$master->id.'"  > '.$master->admission_no.'  </option>';
 
-        return response($html);
+        }
+        $data = [
+            'html'=>$html,
+            'admsn_nos'=>$admsn_nos
+        ];
+        return response($data);
 
 
     }
@@ -734,32 +758,55 @@ if (!empty($request->get('category_id'))) {
 
         // return $student_id;
         $category_id = $req->category_id;
-        if(is_numeric($req->class_id)){
-            return $req->class_id;
-            $data['class_id'] = $req->class_id;
-        }
-
-       $student_fee_items = FeeStructure::join('fee_structure_items','fee_structures.id','fee_structure_items.fee_structure_id')
-       ->join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
+        $student_fee_items = FeeStructure::join('fee_master_particulars','fee_structures.particular_id','=','fee_master_particulars.id')
        ->join('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
-       ->select('fee_structures.class_id','fee_structures.category_id','amount','fee_structure_items.student_id','fee_master_particulars.name as fee_name','particular_id')
+       ->join('account_student_details','account_student_details.id','=','fee_structures.student_id')
+       ->select('fee_structures.class_id','fee_structures.category_id','amount','fee_master_particulars.name as fee_name','particular_id')
         ->where('category_id',$category_id)
-        ->where('fee_structure_items.student_id',$student_id);
+        ->where('fee_structures.student_id',$student_id);
 
         if(is_numeric($req->class_id)){
-            return 'ooo';
+        //    $req->class_id;
             $student_fee_items->where('class_id',$req->class_id);
         }
-       $html = '<div class="batch">
-                 <span class="spaces"> <input type="checkbox" value="{{$class->id}}" name="classes[]" class="form-control checkboxes form-control-sm"></span>  
-                 <span class="spaces">{{   $class->name  }}</span>
-                </div>'
-                ;
+        $html = '';
+        $total = 0;
 
-                
-        return response($student_fee_items->get());
+       
+        foreach ($student_fee_items->get() as $key => $item) {
+            $total += $item->amount;
+            $html .= '
+            <div class="batch total_check">
+
+            <div class="div_spaces">
+            <span class="spaces"> <input type="checkbox" value="'.$item->particular_id.'" name="fee_items[]" class="form-control checkboxes form-control-sm" checked></span>  
+            <span class="spaces">'.$item->fee_name .'</span>
+            </div>
+
+            <div class="div_spaces">
+            <span class="spaces"> &nbsp; </span>
+            <span style="float:right; margin-left:3rem" class="spaces amount">  '.$item->amount.' </span>
+           </div>
+           </div>
+           ';
 
 
+           if($key == count($student_fee_items->get()) - 1){
+            $html.= '<div class="batch"> 
+            <div class="div_spaces">
+            <span class="spaces checkboxes"> </span>
+            <span class="spaces text-right text-bold" style="margin-left:.9rem"> <b> TOTAL </b> </span>
+            </div>
+            <div class="div_spaces">
+            <span class="spaces text-bold" id="total">  <b id="total_bd"> '.$total.' </b> </span>
+            </div>
+            </div>';
+        
+        }
+
+        }
+
+        return response($html);
 
     }
 

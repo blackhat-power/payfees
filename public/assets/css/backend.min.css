@@ -12674,9 +12674,11 @@ i.amber-text {
 
 .iq-footer {
     padding: 15px;
+    position:fixed;
+    bottom:0;
     margin-left: 260px;
     width: calc(100vw - 264px);
-    background: #fff;
+    background: #e1e1e1;
     -ms-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, .0392157);
     -o-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, .0392157);
     box-shadow: 0 16px 40px 0 rgba(0, 0, 0, .0392157);

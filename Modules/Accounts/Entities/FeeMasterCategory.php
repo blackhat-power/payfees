@@ -22,6 +22,10 @@ class FeeMasterCategory extends Model
 
     }
 
+    public function getFeeStructures(){
+        return $this->hasMany(FeeStructure::class,'category_id');
+    }
+
 
     // public function classes(){
 

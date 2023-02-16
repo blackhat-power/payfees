@@ -21,7 +21,6 @@ use App\Models\Receipt;
 use App\Models\ReceiptItem;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF;
-use Facade\FlareClient\Stacktrace\File;
 use Flasher\Toastr\Prime\ToastrFactory;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\QueryException;
@@ -31,7 +30,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
+use Modules\Accounts\Entities\FeeMasterCategory;
+use Modules\Accounts\Entities\FeeMasterParticular;
 use Modules\Accounts\Entities\FeeReminderSetting;
+use Modules\Accounts\Entities\FeeStructure;
 use Modules\Configuration\Entities\AccountSchoolBankDetail;
 use Modules\Configuration\Entities\AccountSchoolDetail;
 use Modules\Configuration\Entities\AccountSchoolDetailClass;
@@ -44,6 +46,7 @@ use Modules\Registration\Entities\AccountStudentDetail;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Yoeunes\Toastr\Toastr;
+use Illuminate\Support\Facades\File;
 
 class AccountsController extends Controller
 {
@@ -571,18 +574,10 @@ $journal =  Journal::updateOrCreate(
     public function generateInvoicePdf($id)
     {
 
-
-    // find($season_id)->semesters;
-//    return $amountInWords = ucwords((new NumberFormatter('en_IN', NumberFormatter::SPELLOUT))->format(500));
-    $pymnt_schedule = [];
-
-      $data['particulars'] = $particulars = Invoice::join(
+ $data['particulars'] = $particulars = Invoice::join(
            'invoice_items', 'invoices.id','=', 'invoice_items.invoice_id',)
         ->join('accounts', 'invoices.account_id', '=', 'accounts.id')
-        ->join('fee_type_groups','fee_type_groups.id','=','invoice_items.fee_group_id')
         ->join('account_school_detail_seasons','invoices.season_id','=','account_school_detail_seasons.id')
-        // ->join('semesters','account_school_detail_seasons.id','=','semesters.account_school_detail_season_id')
-        // ->join('account_school_detail_fee_structure_items','account_school_detail_fee_structures.id','=','account_school_detail_fee_structure_items.account_school_detail_fee_structure_id')
         ->join('account_student_details', 'accounts.id', '=', 'account_student_details.account_id')
         ->join('account_school_details', 'account_student_details.account_school_details_id', 'account_school_details.id')
         ->select(
@@ -601,128 +596,7 @@ $journal =  Journal::updateOrCreate(
         ->where('invoices.id', $id)
         ->groupBy(['invoices.id'])
         ->first();
-
-        $invoice_amount = $particulars->amount;
-
-        // return $particulars->fee_type_group_id;
-
-    //    return AccountSchoolDetailFeeStructure::all();
-      
-    //    return AccountSchoolDetailSeason::join('semesters','account_school_detail_seasons.id','=','semesters.account_school_detail_season_id')
-    //    ->join('account_school_detail_fee_structures','account_school_detail_seasons.id','=','account_school_detail_fee_structures.season_id')
-    //    ->where('account_school_detail_seasons.id',$particulars->season_id)
-    //    ->where('account_school_detail_fee_structures.account_school_details_class_id',$particulars->class_id)
-    //    ->where('account_school_detail_fee_structures.fee_group_id',2)->get();
-
-     $invoice_item_gpids = Invoice::find($id)->invoiceItems;
-     $installments_box_office = [];
-
-      foreach($invoice_item_gpids as $grpid){
-
-         $no_of_installment =  AccountSchoolDetailSeason::join('semesters','account_school_detail_seasons.id','=','semesters.account_school_detail_season_id')
-         ->join('account_school_detail_fee_structures','account_school_detail_seasons.id','=','account_school_detail_fee_structures.season_id')
-         ->join('invoice_items', 'invoice_items.fee_group_id', '=' ,'account_school_detail_fee_structures.id')
-         ->where('account_school_detail_seasons.id',$particulars->season_id)
-         ->where('account_school_detail_fee_structures.account_school_details_class_id',$particulars->class_id)
-         ->where('account_school_detail_fee_structures.fee_group_id',$grpid->fee_group_id)
-         ->select('account_school_detail_fee_structures.*','semesters.name as semester_name','semesters.start_date as ssd','semesters.end_date as sed')
-         ->groupBy('account_school_detail_fee_structures.fee_group_id')
-         ->first();
-
-         $installments_box_office[] = $no_of_installment;
-
-      }
-        $max_installment = max($installments_box_office)->installments;
-
-        // return $installments_box_office;
-        $no_of_semesters =  AccountSchoolDetailSeason::find($particulars->season_id)->semesters()->count();
-
-        $amount_per_installment = $invoice_amount/$max_installment;
-        $percentage_per_installment = floatval (($amount_per_installment/$invoice_amount * 100 ));
-
-
-        $payment_schedules =  AccountSchoolDetailSeason::join('semesters','account_school_detail_seasons.id','=','semesters.account_school_detail_season_id')
-        ->join('account_school_detail_fee_structures','account_school_detail_seasons.id','=','account_school_detail_fee_structures.season_id')
-        // ->join('invoices','account_school_detail_fee_structures.id','=','invoices.fee_type_group_id')
-        ->where('account_school_detail_seasons.id',$particulars->season_id)
-        ->where('account_school_detail_fee_structures.account_school_details_class_id',$particulars->class_id)
-        ->where('account_school_detail_fee_structures.fee_group_id',$particulars->fee_type_group_id)
-        //  ->groupBy('account_school_detail_fee_structures.id')
-        // ->where('invoices.id', $id)
-        ->get();
-
-            // if ($no_of_installment/$no_of_semesters == 1 ) {
-            //     # code...
-            // }else{
-
-                // if($no_of_semesters ==  1){
-
-                //     $semester_name = $p_schedule->name;
-                //         $start_date = $p_schedule->start_date;
-
-                //         $end_date = $p_schedule->end_date;
-                //         $s_date = strtotime($start_date);
-                //         $due_date = strtotime("+14 day", $s_date);
-                //         $final_due_date = date('d-m-Y', $due_date);
-
-                //         $e_date = strtotime($end_date);
-                //         $e_due_date = strtotime("-14 day", $e_date);
-                //         $e_final_due_date = date('d-m-Y', $e_due_date);
-
-                //         $pymnt_schedule[] =[
-                //         'percentage'=>''.$percentage_per_installment.'%',
-                //         'amount_per_installment'=>$amount_per_installment,
-                //         'description'=>['start_date' =>'Beggining of '.$semester_name.'', 'before_end_description' => 'Before end of '.$semester_name.''],
-                //         'due_date'=> ['start_final_date'=>$final_due_date,'before_end_due'=>$e_final_due_date],
-                //         'fee_type_group'=>$p_schedule->fee_group_id
-
-                //     ];
-
-                // }
-
-                foreach($payment_schedules as $p_schedule){
-
-                   
-
-                    for ($i=1; $i <= $no_of_installment/$no_of_semesters  ; $i++) {
-                        $semester_name = $p_schedule->name;
-                        $start_date = $p_schedule->start_date;
-
-                        $end_date = $p_schedule->end_date;
-                        $s_date = strtotime($start_date);
-                        $due_date = strtotime("+14 day", $s_date);
-                        $final_due_date = date('d-m-Y', $due_date);
-
-                        $e_date = strtotime($end_date);
-                        $e_due_date = strtotime("-14 day", $e_date);
-                        $e_final_due_date = date('d-m-Y', $e_due_date);
-                        // $NewDate=Date('y:m:d', strtotime('+50 days'));
-
-                        $pymnt_schedule[] =[
-                            'percentage'=>''.$percentage_per_installment.'%',
-                            'amount_per_installment'=>$amount_per_installment,
-                            'description'=>['start_date' =>'Beggining of '.$semester_name.'', 'before_end_description' => 'Before end of '.$semester_name.''],
-                            'due_date'=> ['start_final_date'=>$final_due_date,'before_end_due'=>$e_final_due_date],
-                            'fee_type_group'=>$p_schedule->fee_group_id
-
-                        ];
-
-                     }
-
-                    }
-
-
-            // }
-
-
-
        $data['invoice_items'] = Invoice::find($id)->invoiceItems;
-        $data['payments_schedule_list'] =$ps = $pymnt_schedule;
-        $data['no_of_installments'] = $no_of_installment;
-        // foreach ($ps as $key => $p) {
-        //     return $p['due_date'];
-        //     # code...
-        // }
 
         $data['school_details'] = AccountSchoolDetail::first();
         $data['school_phone'] = Contact::where('contactable_type',AccountSchoolDetail::class)
@@ -751,34 +625,11 @@ $journal =  Journal::updateOrCreate(
                 ->where('contactable_id',$particulars->std_id)
                 ->where('contact_type_id',2)
                 ->first()->contact;
-
-
-
-
-        //  return /* $id ; */
-
-                     /*       TO BE WOKED ON INVOICES             */
-
-
-    //    return  $data['school_details'] =$school= Invoice::find($id)->account->students[0]->school()->with(['contactable','district'])->get();
-    //     //  $data['school_details'] =
     $data['school_bank_details'] = AccountSchoolBankDetail::join(''.env('LANDLORD_DB_DATABASE').'.bank_details','account_school_bank_details.bank_id','=',''.env('LANDLORD_DB_DATABASE').'.bank_details.id')->get();
-    //  AccountSchoolDetail::all();
-
-        //   return view('accounts::printouts.invoice_pdf', $data);
-
           $pdf = FacadePdf::loadView('accounts::printouts.invoice_pdf', $data);
 
          return $pdf->stream('itsolutionstuff.pdf', array("Attachment" => false));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-
-
     public function receiptsIndex()
     {
         $data['activeLink'] = 'receipts';
@@ -798,8 +649,6 @@ $journal =  Journal::updateOrCreate(
             if(!is_dir($root_path)){
                 File::makeDirectory($root_path, 0777, true, true);
             }
-
-
 
             $invoice_no = Invoice::find($request->bill_no)->invoice_number;
 
@@ -1611,7 +1460,8 @@ $journal =  Journal::updateOrCreate(
 
      public function generateOneReceiptPdf($id,$receipt_id){
 
-         $data['receipts'] = $receipts = Invoice::find($id)->receipts;
+     $data['receipts'] = $receipts = Invoice::find($id)->receipts;
+
          $data['receipts'] = $receipts = Receipt::join('invoices','receipts.invoice_id','=','invoices.id')
                 ->join('invoice_items', 'invoices.id', '=', 'invoice_items.invoice_id')
                 ->join('receipt_items', 'receipts.id','=','receipt_items.receipt_id')
@@ -1621,7 +1471,7 @@ $journal =  Journal::updateOrCreate(
                 ->where('receipts.id',$receipt_id)
                 ->first();
 
-         $data['billed_amount'] = Invoice::find($id)->getTotalInvoiceAttribute();
+             $data['billed_amount'] = Invoice::find($id)->getTotalInvoiceAttribute();
  
          $class =  AccountSchoolDetailClass::find($receipts->account_school_details_class_id)->name;
          $data['school_info'] = AccountSchoolDetail::first();
@@ -2713,4 +2563,297 @@ public function feeReminderDatatable(){
 }
 
 
+public function newInvoiceCreate(){
+
+    $data['activeLink'] = 'fee_reminder_settings';
+    $data['semesters'] = Semester::all();
+    $data['classes'] = AccountSchoolDetailClass::all();
+    $data['academic_years'] = AccountSchoolDetailSeason::all();
+    $data['bill_categories'] = FeeTypeGroup::where('parent_id',NULL)->get();
+    return view('accounts::fee_reminder.index')->with($data);
+
 }
+
+
+public function redoInvoiceCreate(){
+
+
+    $data['activeLink'] = 'bills';
+    $data['activeLink'] = 'fee_master';
+    $data['admn_nos']  = AccountStudentDetail::all();
+    $data['classes'] = AccountSchoolDetailClass::all();
+    $data['fee_master_categories'] = FeeMasterCategory::all();
+    $data['semesters'] = Semester::all();
+    $data['classes'] = AccountSchoolDetailClass::all();
+    $data['academic_years'] = AccountSchoolDetailSeason::all();
+    $data['bill_categories'] = FeeTypeGroup::where('parent_id',NULL)->get();
+    return view('accounts::forms.create_invoice')->with($data);
+
+}
+
+
+
+public function generateInvoice(Request $request){
+    $template_id = $request->template_id;
+//    return $data['fee_master_categories'] = FeeMasterCategory::join('')
+//    where('id',$template_id)->get();
+
+// return AccountStudentDetail::find(1)->feeStructures;
+
+// return FeeMasterCategory::find($template_id)->getFeeStructures;
+
+try {
+
+    
+    
+  $students = AccountStudentDetail::join('fee_structures','account_student_details.id','=','fee_structures.student_id')
+    ->join('fee_master_categories','fee_structures.category_id','=','fee_master_categories.id')
+    ->select('account_student_details.*')
+    ->groupBy(['account_student_details.id'])
+    ->where('fee_master_categories.id',$template_id)
+    ->get();
+ 
+ 
+    foreach ($students as $key => $student) {
+        DB::beginTransaction();
+        $student->feeStructures;
+         # code...
+         $invoice_instance = new Invoice();
+         $invoice_no = $invoice_instance->invoice_no();
+        //  return $invoice_no;
+         $date =  date('Y-m-d');
+         $invoice = Invoice::updateOrCreate(
+             [
+         'id'=>null
+     ],
+             [
+         'account_id'=>$student->account_id,
+         'created_by'=>auth()->user()->id,
+         'currency_id'=>1,
+         'payment_terms'=>'DUE_ON_RECEIPT',
+         'date'=>$date,
+         'student_id'=>$student->id,
+         'remarks'=>'',
+         'semester_id'=>'semester 1',
+         'invoice_number'=>$invoice_no,
+         'class_id'=>$student->account_school_details_class_id,
+         'season_id'=>AccountSchoolDetailSeason::where('status','active')->first()->id
+     ]
+         );
+ 
+         if($invoice){
+             foreach($student->feeStructures as $structure) {
+                 $invoice_items =  InvoiceItem::updateOrCreate(
+                 ['id'=> null],
+                 [
+                 'item_id'=>null,
+                 'quantity'=>1,
+                 'tax_id'=>1,
+                 'exchange_rate'=>1,
+                 'invoice_id'=>$invoice->id,
+                 'descriptions'=> FeeMasterParticular::find($structure->particular_id)->name,
+                 'fee_group_id'=>1,
+                 'rate'=> $structure->amount
+                 ]
+                     );
+               }
+ 
+         }
+        
+         $commit = DB::commit();
+     }
+
+    
+    //  return $commit;
+  
+     if($students){
+    $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+    return response($data);
+     }
+
+} catch (QueryException $e) {
+    $data = ['state'=>'Error', 'title'=>'Error', 'msg'=>$e->getMessage()];
+    return response($data);
+}
+
+
+    
+
+  
+
+
+    // $invoice_items = $student
+
+    // if ($invoice) {
+    //     // return $invoice;
+    //     AccountStudentDetail::where('id',$invoice->student_id)
+    //     ->join('fee_structure_items','fee_structure_items.fee_structure_id','=','fee_structures.id')
+
+
+    //     foreach ($request->amount as $col_index => $col) {
+    //         $explode = explode('-', $col);
+    //         $description = $explode[1];
+    //         $rate = $explode[0];
+    //        $group_id = $request->group_ids[$col_index];
+
+    
+    //     }
+
+    // }
+
+
+
+
+
+
+
+
+  
+
+
+}
+
+
+
+
+// feeStructureItems
+
+// return AccountStudentDetail::find(1)->feeStructureItems->feeStructure;
+
+//    if (!empty($request->get('class_id'))) {
+//     $students = $students->where('account_student_details.account_school_details_class_id',$class_id);
+//     }
+    
+//     if (!empty($request->get('category_id'))) {
+    
+//         $students = $students->where('category_id',$request->get('category_id'));
+    
+//         }
+
+
+
+// return $request->all();
+
+
+// try {
+//     DB::beginTransaction();
+    
+//     //  return $request->date;
+//     $invoice_instance = new Invoice();
+//     $invoice_no = $invoice_instance->invoice_no();
+//     $date =  $request->date;
+//    $newDate = date("Y-m-d", strtotime($date));
+//    $query = DB::select(
+//         'select account_student_details.account_id as student_account_id, account_school_details.account_id as school_account_id from account_student_details JOIN account_school_details ON account_student_details.account_school_details_id = account_school_details.id
+//     where account_student_details.id = ?',
+//         [$request->stdnt_id]
+//     )[0];
+//     $invoice = Invoice::updateOrCreate(
+//         [
+//     'id'=>null
+// ],
+//         [
+//     'account_id'=>$query->student_account_id,
+//     'created_by'=>auth()->user()->id,
+//     'currency_id'=>1,
+//     'payment_terms'=>'DUE_ON_RECEIPT',
+//     'date'=>$newDate,
+//     'remarks'=>$request->remarks,
+//     'semester_id'=>$request->term,
+//     'invoice_number'=>$invoice_no,
+//     'due_date'=>$request->date,
+//     // 'fee_type_group_id'=>$request->fee_type_group,
+//     'class_id'=>$request->class_id,
+//     'season_id'=>AccountSchoolDetailSeason::where('status','active')->first()->id
+// ]
+//     );
+
+
+   
+
+    // DB::commit();
+
+    // if ($invoice) {
+    //     session()->flash('success','Record created successful');
+    //     $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+    //     return response($data);
+
+    // }
+
+
+
+
+
+// $journal =  Journal::updateOrCreate(
+//             [
+//         'id'=>null,
+//     ],
+//             [
+//  'reference'=>$invoice->invoice_number,
+// 'type'=>'SALES',
+// 'remarks'=>$invoice->remarks,
+// 'relationable_type'=>Invoice::class,
+// 'relationable_id'=>$invoice->id,
+// 'date'=>$invoice->date
+//     ]
+//         );
+
+
+//         if ($journal) {
+//             // return $invoice_items->rate;
+
+//             $journal_item  =   JournalItem::updateOrCreate(
+//                 [
+//                 'id'=>null,
+//             ],
+//                 [
+//                 'journal_id'=>$journal->id,
+//                 'cr_account_id'=>$invoice->account_id,
+//                 'dr_account_id'=>$query->school_account_id,
+//                 'amount'=>$invoice_items->rate,
+//                 'naration'=>$invoice->remarks
+//             ]
+//             );
+//         }
+    // }
+//     DB::commit();
+
+//     if ($journal_item) {
+//         session()->flash('success','Record created successful');
+//         $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
+//         return response($data);
+
+//     }
+
+//     $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
+//     return  response($data);
+
+// } catch (QueryException $e) {
+//     return $e->getMessage();
+//     $data = ['state'=>'Error', 'title'=>'Database error', 'msg'=>'Something went wrong!<br />' . $e->errorInfo[2]];
+//     return  response($data);
+
+// }
+
+public function queryAdmissionNumbers(Request $req){
+
+    // return $req->all();
+$students = AccountSchoolDetailClass::find($req->class_id)->students;
+   $html = '<option> </option>';
+
+   foreach ($students as $key => $student) {
+    $html .= '<option  value="'.$student->id.'">'.$student->admission_no.'  </option>';
+   }
+
+   return response($html);
+
+
+}
+
+
+
+
+}
+
+
+

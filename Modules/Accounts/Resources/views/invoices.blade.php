@@ -80,7 +80,7 @@
         <span class="float-right">
             <a href="javascript:void(0)" title="excel" onclick="generateFile('excel')"  style="color:white" class="btn btn-success btn-sm"> <i class="fa fa-file-excel"></i>&nbsp;Excel</a>
             <a href="javascript:void(0)" title="pdf" onclick="generateFile('pdf')" style="color:white" class="btn btn-warning btn-sm"><i class="fa fa-print"></i>&nbsp;Pdf</a>
-            <a href="{{ route('accounts.invoices.create') }}" title="new invoice"  id="register" type="button" class=" btn btn-primary btn-sm" ><i class="fa fa-plus-circle"></i>&nbsp;New Invoice</a>
+            <a href="{{ route('accounts.new.invoice.redo.create') }}" title="new invoice"  id="register" type="button" class=" btn btn-primary btn-sm" ><i class="fa fa-plus-circle"></i>&nbsp;New Invoice</a>
         </span>
         <form id="filter_form">
         <div class="row" style="margin-top:2%; display:none" id="toggleFilters" >
