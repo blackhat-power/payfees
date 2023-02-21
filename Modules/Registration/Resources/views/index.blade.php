@@ -13,7 +13,7 @@
 @endsection 
 
 @section('content-body')
-            <div class="card" style="width: 100%">
+            <div class="card" style="width: 100%; margin-bottom:2%" >
                 <div class="card-header border-bottom">
                     <span>
                         <input type="checkbox" id="registration_checkbox" class="checkbox-input float-left" style="width: 30px; height: 30px;" id="excel_upload_checkbox">
@@ -32,10 +32,8 @@
                         <form method="post" id="import_form" action="{{ route('students.excel.import')  }}" enctype="multipart/form-data">
                             @csrf
                         <div class="row" id="row_border" style="margin-top:2%;">
-                            <div class="col-md-1"></div>
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <div class="row"> 
-                                    
                                     <div class="col-md-3">
                                         <div class="form-group">
                                         <a    
@@ -72,14 +70,18 @@
                                     </div>
                                     </div>
 
-                                    <div class="col-md-12">
+                                   <div class="col-md-12">
+                                    <span style="float: right">
                                         <a type="submit"
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="upload excel"
                                         class="btn btn-primary btn-default btn-sm float-right" id="import" style="color:#fff" name="import" value="Import"><i class="fa fa-upload "></i>
                                         </a>
-                                    </div>
+                                    </span> 
+                                   </div>
+                                       
+                                   
                                   
 
                                 </div>
@@ -90,37 +92,40 @@
                     </div>
             </div>
                    
-                   </div>
-
-        <form id="f_clr">
-            <div class="row" style="margin-bottom:1%; margin-top:1%">
-                <div class="col-md-3">
-                    <select name="class_filter" id="class_filter" class="form-control form-control-sm">
-                        <option value="">Select Class</option>
-                        @foreach($classes as $class)
-                        <option value="{{$class->id}}">{{$class->name}}</option>
-                         @endforeach
-                    </select>   
-                </div>
-
-                <div class="col-md-3">
-                    
-                    <select name="stream_filter_id" id="stream_filter" class="form-control form-control-sm">
-                        <option value="">Select Stream</option>
-                    </select>
-
-                </div>
-                <div class="col-md-1" style="margin-top: 0%">
-                    <a title="clear" href="javascript:void(0)" class="btn btn-info btn-sm" id="clear"><i class="fa fa-refresh"></i></a>
-                </div>
+                   
+<div class="container">
+    <fieldset class="border p-3" style="background: #eeeeee;" id="fieldset_template">
+        <legend class="w-auto" style="font-size: 12px !important; min-width: 15rem !important;">
+               <input style="background:darkseagreen" type="text" value="FILTERS" disabled class="form-control form-control-sm">
+        </legend>
+        <form id="f_clr"> 
+        <div class="row">
+            <div class="col-md-4">
+                <select name="class_filter" id="class_filter" class="form-control form-control-sm">
+                    <option value="">Select Class</option>
+                    @foreach($classes as $class)
+                    <option value="{{$class->id}}">{{$class->name}}</option>
+                     @endforeach
+                </select>   
             </div>
 
+            <div class="col-md-4">
+                        
+                <select name="stream_filter_id" id="stream_filter" class="form-control form-control-sm">
+                    <option value="">Select Stream</option>
+                </select>
 
-        </form>
-                   
-                </div>
-                
-                <div class="container-fluid">
+            </div>
+
+            <div class="col-md-1" style="margin-top: 0%">
+                <a title="clear" href="javascript:void(0)" class="btn btn-info btn-sm" id="clear"><i class="fa fa-refresh"></i></a>
+            </div>
+
+        </div>
+    </form>
+    </fieldset>
+</div>   
+                <div class="container-fluid" style="margin-top: 1rem">
                     <div class="table-responsive" style="margin-top: 1%">
                         <table id="students_datatable" class="table table-sm table-striped table-bordered" width="100%" style="table-layout: inherit">
                             <thead>
@@ -139,6 +144,8 @@
             </div>
         </div>
         </div>
+    </div>
+
 
     {{--    Registration Modal     --}}
 
@@ -243,7 +250,7 @@ students_datatable=$('#students_datatable').DataTable({
          {data:'stream_name', name:'stream_name'},
          {data:'gender', name:'gender'},
          {data:'dob', name:'dob'},
-         {data:'action', name:'action', orderable:false, searchable:false}
+         {data:'action', name:'action', orderable:false, searchable:false, width:'10%'}
      ],
 
      drawCallback:function(){

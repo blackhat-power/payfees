@@ -54,6 +54,22 @@
             .div_spaces{
                 display: flex;
             }
+
+            .radiobtns{
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .filter_type{
+                padding-left: 2rem;
+            }
+
+            .card .card-header {
+                background: #9e9e9e ;
+            }
+            .radio:hover{
+                cursor: pointer;
+            }
 /*
             .batch_container{
 
@@ -79,11 +95,43 @@
         <div class="card-body">
 
             <div class="container">
-                <div class="row">
+                <span>
+                    {{-- <input type="checkbox" id="filter_checkbox" class="checkbox-input float-left" style="width: 30px; height: 30px;"> --}}
+                   {{-- Filters --}}
+                </span>
 
+                <div class="row">
+                    <div class="col-md-2">
+                        <span>   </span>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+
+
+
+                    <div class="radiobtns">
+                        <div>
+                            <span class="filter_type">
+                                <input id="radiobtn-1" name="no_of_terms" onclick="changeTemplate($(this))"  type="radio" class="radio" value="1" checked>
+                                <label for="" style="margin-top: 0.5rem;">Generate By Template</label>
+                            </span>
+
+                            <span class="filter_type">
+                                <input id="radiobtn-2" name="no_of_terms" onclick="changeManually($(this))" class="radio"  type="radio" value="2">
+                                <label for="" style="margin-top: 0.5rem;">Generate Manually</label>
+                            </span>
+                        </div> 
+                        <div class="filter_type">
+                        <span style="float: right;"><button id="create_invoice" disabled class="btn btn-sm btn-primary"> Generate Invoice   </button></span>
+                    </div>
+                                                      
+                    </div>
+       
+
+{{-- 
                         <div class="col-sm-3" id="by_template">
-                            <span>Generate By Template:</span>
-                           <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
+                        
+                           <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control temp form-control-sm">
                             <option value="">Select Template</option>
                             @foreach ($fee_master_categories as  $category)
                                 <option value="{{$category->id}}">{{$category->name}}</option>
@@ -92,8 +140,86 @@
                            <span style="margin-left: 25rem; display:none " id="loader_spin" >
                             <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
                             </span>
-                          </div>
-                          <div class="col-sm-3" id="by_template">
+                          </div> --}}
+
+                          <fieldset class="border p-3" style="background: #eeeeee;" id="fieldset_template">
+                            <legend class="w-auto" style="font-size: 12px !important; min-width: 15rem !important;">
+                                   <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control temp form-control-sm">
+                                    <option value="">Select Template</option>
+                                    @foreach ($fee_master_categories as  $category)
+                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                    @endforeach
+                                   </select>
+                                   <span style="margin-left: 25rem; display:none " id="loader_spin" >
+                                    <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
+                                    </span>
+                            </legend>
+                            <div class="row">
+
+                                <div class="col-sm-3">
+                                    <div style="display:none" id="by_class">
+                                        <span>Filter By Class:</span>
+                                        <select name="class_id" data-check="0" id="class_id" style="background: #87a2a1;" class="form-control temp form-control-sm">
+                                         <option value="">Select Class</option>
+                                         @foreach ($classes as  $class)
+                                             <option value="{{$class->id}}">{{$class->name}}</option>
+                                         @endforeach
+                                        </select>
+                                    </div>
+                                      </div>
+                                      <div class="col-sm-3">
+                                        <div style="display:none" id="by_admn_No">
+                                            <span>Filter By Admission Number:</span>
+                                            <select name="admn_no" data-check="0" id="admn_no" style="background: #87a2a1;" class="form-control form-control-sm">
+                                                <option value="">Select Admission Number</option>
+                                                @foreach ($admn_nos as $no )
+                                                <option value="{{$no->id}}">{{ $no->admission_no  }}</option>
+                                                @endforeach
+                                            
+                                            </select>
+                                        </div>
+                                          </div>
+                            </div>
+   
+                          </fieldset>
+
+
+                          <fieldset class="border p-3 d-none" style="background: #eeeeee;" id="manually">
+                            <legend class="w-auto" style="font-size: 12px !important; min-width: 15rem !important;">
+                                  <input type="text" disabled value="GENERATE MANUALLY"> 
+                            </legend>
+                            <div class="row">
+                                TO BE DONE...
+
+                                {{-- <div class="col-sm-3">
+                                    <div style="display:none" id="by_class">
+                                        <span>Filter By Class:</span>
+                                        <select name="class_id" data-check="0" id="class_id" style="background: #87a2a1;" class="form-control temp form-control-sm">
+                                         <option value="">Select Class</option>
+                                         @foreach ($classes as  $class)
+                                             <option value="{{$class->id}}">{{$class->name}}</option>
+                                         @endforeach
+                                        </select>
+                                    </div>
+                                      </div>
+                                      <div class="col-sm-3">
+                                        <div style="display:none" id="by_admn_No">
+                                            <span>Filter By Admission Number:</span>
+                                            <select name="admn_no" data-check="0" id="admn_no" style="background: #87a2a1;" class="form-control form-control-sm">
+                                                <option value="">Select Admission Number</option>
+                                                @foreach ($admn_nos as $no )
+                                                <option value="{{$no->id}}">{{ $no->admission_no  }}</option>
+                                                @endforeach
+                                            
+                                            </select>
+                                        </div>
+                                          </div> --}}
+                            </div>
+   
+                          </fieldset>
+                          
+
+                          {{-- <div class="col-sm-3" id="by_template">
                             <span>Generate Manually:</span>
                            <select name="category_id" data-check="0" id="category_id" style="background: #87a2a1;" class="form-control form-control-sm">
                             <option value="">Select Template</option>
@@ -104,54 +230,13 @@
                            <span style="margin-left: 25rem; display:none " id="loader_spin" >
                             <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
                             </span>
-                          </div>
+                          </div> --}}
 
 {{-- <div class="col-sm-3">
    
   </div> --}}
-  
-             <div class="col-sm-3">
-                <div style="display:none" id="by_class">
-                    <span>Generate By Class:</span>
-                    <select name="class_id" data-check="0" id="class_id" style="background: #87a2a1;" class="form-control form-control-sm">
-                     <option value="">Select Class</option>
-                     @foreach ($classes as  $class)
-                         <option value="{{$class->id}}">{{$class->name}}</option>
-                     @endforeach
-                    </select>
+
                 </div>
-                  </div>
-                  <div class="col-sm-3">
-                    <div style="display:none" id="by_admn_No">
-                        <span>Generate By Admission Number:</span>
-                        <select name="admn_no" data-check="0" id="admn_no" style="background: #87a2a1;" class="form-control form-control-sm">
-                            <option value="">Select Admission Number</option>
-                            @foreach ($admn_nos as $no )
-                            <option value="{{$no->id}}">{{ $no->admission_no  }}</option>
-                            @endforeach
-                        
-                        </select>
-                    </div>
-                      </div>
-
-                  <span style="float: right; margin-top:1.1rem"><button id="create_invoice" disabled class="btn btn-sm btn-primary"> Generate Invoice   </button></span>
-
-
-                  
-
-                
-                    
-                </div>
-
-                <div id="loader_div" style="display:none">
-                    <span style="float:right; " id="loader_spin" >
-                        <img src="{{ asset('assets/images/new_loader.gif') }}" alt="">
-                        </span>
-                </div>
-               
-                      
-                </div>
-              </div>
 
               <div style="margin-top: 2rem">
             </div>
@@ -188,6 +273,8 @@
               {{-- @endif --}}
 
         </div>
+    </div>
+</div>
 
 
 
@@ -245,8 +332,24 @@
 
  @section('scripts')
 
+
+function changeManually(elem){
+
+    $('#fieldset_template').addClass('d-none');
+    $('#manually').removeClass('d-none');
+
+}
+
+function changeTemplate(elem){
+
+    $('#manually').addClass('d-none');
+    $('#fieldset_template').removeClass('d-none');
+
+}
+
+
 $('#class_id').change(function(){
-    $('#loader_spin').removeAttr('style','display:none').css({'margin-left':'25rem'});
+    $('#loader_spin').removeAttr('style','display:none').css({'margin-left':'5rem'});
     $('#by_template').removeAttr('style','display:none');
 
 $.ajax({
@@ -273,6 +376,8 @@ setTimeout(function(){
 
 });
 
+$('.temp').select2({width:'100%'});
+
 
 
 document.addEventListener('click',function(event){
@@ -296,19 +401,6 @@ if( elem_type == 'checkbox'){
 
 
 })
-
-
-{{-- $('.my_checkboxes').click(function(){
-
-console.log('clicked');
-
-}) --}}
-
-
-
-
-
-
 
 
 $('#category_id').change(function(){
@@ -368,7 +460,7 @@ let query_table = $('#query_fee_structure_table').DataTable({
 
     columns:[
        {data: 'full_name', name:'full_name'},
-       {data: 'fee', name:'fee'},
+       {data: 'admission_no', name:'admission_no'},
       {data: 'fee', name:'fee'},
        {data:'action', name:'action', orderable:false, searchable:false, 'width':'8%' } 
    ],
@@ -468,14 +560,38 @@ $('#none').click(function(){
                 class_id : $('#class_id').val(),
                 admn_no : $('#admn_no').val(),
             },
-            success:function(res)
+            
+            success:function(response)
             {
-                console.log(res);
-            }
+        
+                if(response.state == 'Done'){
+                    toastr.success(response.msg, response.title);
+                    setTimeout(function(){
+                        window.location.replace('{{ route('accounts.invoice') }}')   
+                    }, 1300)
+                    
+                }
+                else if(response.state == 'Fail'){
+                    toastr.warning(response.msg, response.title)
+             
+                }
+                else if(response.state == 'Error') {
+                    toastr.error(response.msg, response.title);
+                }
+                
+            },
+            error:function(response){
+
+                if(response.statusCode == '500'){
+                    toastr.error('Internal Server Error');
+    
+                }
 
 
 
-        });
+        }
+        
+    });
 
 
 

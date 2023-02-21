@@ -2579,7 +2579,7 @@ public function redoInvoiceCreate(){
 
 
     $data['activeLink'] = 'bills';
-    $data['activeLink'] = 'fee_master';
+    $data['radiobtns'] = [1,2];
     $data['admn_nos']  = AccountStudentDetail::all();
     $data['classes'] = AccountSchoolDetailClass::all();
     $data['fee_master_categories'] = FeeMasterCategory::all();
@@ -2610,8 +2610,21 @@ try {
     ->join('fee_master_categories','fee_structures.category_id','=','fee_master_categories.id')
     ->select('account_student_details.*')
     ->groupBy(['account_student_details.id'])
-    ->where('fee_master_categories.id',$template_id)
-    ->get();
+    ->where('fee_master_categories.id',$template_id);
+
+
+    if (!empty($request->get('class_id'))) {
+
+        $students =  $students->where('account_student_details.account_school_details_class_id',$request->get('class_id'));
+ 
+             }
+ 
+             if (!empty($request->get('admn_no'))) {
+                 $students =  $students->where('account_student_details.id',$request->get('admn_no'));
+             }
+
+
+    $students = $students->get();
  
  
     foreach ($students as $key => $student) {
@@ -2663,9 +2676,6 @@ try {
          $commit = DB::commit();
      }
 
-    
-    //  return $commit;
-  
      if($students){
     $data = ['state'=>'Done', 'title'=>'Successful', 'msg'=>'Record created successful'];
     return response($data);

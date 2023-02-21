@@ -119,7 +119,7 @@ border-bottom: 1px solid #999;
             <ol class="breadcrumb">
                 <li  class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Students Management</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Students</a></li>
+                <li class="breadcrumb-item" aria-current="page"> <a href="{{ route('students.registration') }}">Students</a> </li>
                 <li class="breadcrumb-item active" aria-current="page">Registration</a></li>
               </ol>
           </nav>
@@ -174,7 +174,7 @@ border-bottom: 1px solid #999;
         <div class="col-md-4">
             <div  class="form-group">
                 <label for="">Admission Number</label>
-                <input readonly type="text" value="1" class="form-control form-control-sm">
+                <input readonly type="text" value="{{$admission_number}}" name="admission_number" class="form-control form-control-sm">
             </div>
         </div>
         <div class="col-md-4">
@@ -197,7 +197,7 @@ border-bottom: 1px solid #999;
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="Middle Name">Middle Name: <span class="required"></span></label>
+                <label for="Middle Name">Middle Name: </label>
                 <input type="text" name="middle_name" class="form-control form-control-sm" id="middle_name">
              </div>
         </div>
@@ -460,7 +460,9 @@ border-bottom: 1px solid #999;
     <div id="step-5" class="tab-pane">
     
         <form id="form-5" action="" class="form-container" >
-    
+            <div class="loader_gif d-none">
+                <img style="max-width:15%" src="{{ asset('assets/images/cupertino_loader.gif') }}" alt="">
+            </div>
         <div class="row">
     <div class="col-md-12">
     <div class="loader  text-center">
@@ -489,7 +491,7 @@ border-bottom: 1px solid #999;
             </div>
     <div class="col-md-4">
         <div class="form-group">
-            <input type="hidden" name="client_id" class="client_id">
+            {{-- <input type="hidden" name="client_id" class="client_id"> --}}
             <input type="hidden" name="class_id" id="class_id" class="class_id">
             <input type="hidden" name="student_id" id="student_id" class="student_id">
         </div>
@@ -565,6 +567,23 @@ border-bottom: 1px solid #999;
 
 @section('scripts')
 $(document).ready(function() {
+
+
+    var today = new Date();
+
+  // Format the date as yyyy-mm-dd (the format expected by the date input field)
+  var yyyy = today.getFullYear();
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var dd = String(today.getDate()).padStart(2, '0');
+  var formattedDate = yyyy + '-' + mm + '-' + dd;
+
+  // Set the value of the date input field to today's date
+  document.getElementById('admitted_year').value = formattedDate;
+
+
+
+
+
 
     $('body').on('click','.accordion-toggle', function(event){
         console.log('clicked accordion')
@@ -783,8 +802,8 @@ $(document).ready(function() {
 
 $('#finalize_btn').click(function(){
     $(this).addClass("disabled");
-$('.loader').removeClass("d-none");
-let form = $('#trucks_info')[0];
+$('.loader_gif').removeClass("d-none");
+let form = $('#form-5')[0];
 let form_data = new FormData(form);
 
 $.ajax({
@@ -798,9 +817,8 @@ type: "POST",
     dataType:'JSON',
 
     success:function(response){
-        // let data = JSON.parse(response);
-    if(response.state == 'success'){
-            // $('.loader').addClass("d-none");
+    if(response.state == 'Done'){
+     $('.loader_gif').addClass("d-none");
     swal.fire({
     title: response.title,
     text: response.msg,

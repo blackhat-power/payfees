@@ -82,11 +82,13 @@ public static function add_leading_zeros($number, $length = 4)
     }
 
 
-    public function admissionNumber($current_number){
+    public  function admissionNumber($current_number){
             $pads = 5;
-            $generated_admsn_no = 2001 .  $this->numberPad($current_number, $pads);
+         return   $generated_admsn_no = 2001 .  $this->numberPad($current_number, $pads);
 
     }
+
+    
 
 
     public static function format_message($message,$type)

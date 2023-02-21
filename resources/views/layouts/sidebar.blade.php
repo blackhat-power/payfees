@@ -191,9 +191,9 @@
                                         </li>
 
                                             <li style="background-color: #d3d3d3 !important;"  class="{{ $activeLink == 'fee_master'/* 'account_fee_settings' */ ? 'active' : '' }} ">
-                                                <a href="{{ route('accounts.fee_structure.settings') }}">
+                                                {{-- <a href="{{ route('accounts.fee_structure.settings') }}">
                                                     <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee xxx </span>
-                                                </a>
+                                                </a> --}}
 
                                                 <a href="{{ route('accounts.school.fee.structure.master') }}">
                                                     <i style="background-color: unset !important;font-size:8px" class="fa fa-circle"></i> <span> Fee Structure Settings </span>

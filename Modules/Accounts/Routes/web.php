@@ -219,8 +219,6 @@ Route::middleware(['tenant','auth'])->group(function() {
         Route::post('redo/query/admsion_numbers', [AccountsController::class, 'queryAdmissionNumbers'])->name('accounts.query.admsn.numbers');
 
 
-      
-
     });
     
 });

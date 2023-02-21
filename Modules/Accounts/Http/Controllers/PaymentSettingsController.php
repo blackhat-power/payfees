@@ -504,16 +504,7 @@ return '<nobr>'.$button. '</nobr>';
             return  response($data);
 
        }
-
-        // return $html;
-
-
-
-        
-
         return $request->all();
-
-
     }
 
 
@@ -587,17 +578,22 @@ return '<nobr>'.$button. '</nobr>';
             // }
         }
             DB::commit();
-            if ($response) {
+
+    //    isset($response) ?  $a = 'imesetiwa' :  $a = 'haijasetiwa';
+
+    //          return $a;
+
+            // if ($response) {
 
 
                 $data = ['state'=>'Done', 'title'=>'success', 'msg'=>'Record created'];
 
                  return  response($data);
 
-            }
+            // }
 
-            $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
-            return  response($data);
+            // $data = ['state'=>'Fail', 'title'=>'Fail', 'msg'=>'Record could not be created'];
+            // return  response($data);
 
         } catch (QueryException $e) {
 
@@ -630,49 +626,11 @@ return '<nobr>'.$button. '</nobr>';
 
         $class_id = $request->class_id;
         $admn_no = $request->admission_no;
-
-        
-
-        //  return $class_id;
-
         $students = FeeStructure::join('account_student_details','account_student_details.id','=','fee_structures.student_id')
         ->join('fee_master_categories','fee_structures.category_id','=','fee_master_categories.id')
         ->select(DB::raw("SUM(fee_structures.amount) as total_amount"),'fee_master_categories.id as category_id','fee_structures.amount','account_student_details.*')
         ->groupBy(['account_student_details.id'])
         ;
-
-        // return $students->get();
-
-
-
-
-        // $students = AccountStudentDetail::join('account_school_detail_classes','account_student_details.account_school_details_class_id','=','account_school_detail_classes.id')
-        // ->leftjoin('account_school_detail_streams','account_student_details.account_school_detail_stream_id','=','account_school_detail_streams.id')
-        // ->leftjoin('fee_structures','fee_structures.class_id','=','account_school_detail_classes.id')
-        // ->leftjoin('fee_master_categories','fee_structures.category_id','=','fee_master_categories.id')
-        // ->leftjoin('fee_structure_items','fee_structure_items.category_id','=','fee_master_categories.id')
-        // ->select(DB::raw("SUM(fee_structure_items.amount) as total_amount"),'account_student_details.*','account_school_detail_classes.name as class_name','account_school_detail_streams.name as stream_name')
-        // ->groupBy('account_student_details.id')
-        // ->where('account_student_details.grad',0);
-
-
-//         $subquery = DB::table('fee_structure_items')
-//         ->select(DB::raw('SUM(amount) as sum_amount'))
-//         ->leftjoin('fee_structures','fee_structures.category_id','=','fee_structure_items.category_id')
-//         ->leftjoin('account_school_detail_classes','account_school_detail_classes.id','=','fee_structures.class_id')
-//         ->leftjoin('account_student_details','account_student_details.account_school_details_class_id','=','account_school_detail_classes.id')
-//         ->where('account_student_details.grad',0)
-//         ->groupBy('account_student_details.id')
-//         ->toSql();
-
-// $students = AccountStudentDetail::join('account_school_detail_classes','account_student_details.account_school_details_class_id','=','account_school_detail_classes.id')
-//         ->leftjoin('account_school_detail_streams','account_student_details.account_school_detail_stream_id','=','account_school_detail_streams.id')
-//         ->leftjoin(DB::raw("($subquery) as sum_table"),'sum_table.account_student_details_id','=','account_student_details.id')
-//         ->select('sum_table.sum_amount AS sum','account_student_details.*','account_school_detail_classes.name as class_name','account_school_detail_streams.name as stream_name')
-//         ->groupBy('account_student_details.id');
-
-
-
 
 if (!empty($request->get('class_id'))) {
 $students = $students->where('account_student_details.account_school_details_class_id',$class_id);

@@ -12,22 +12,6 @@
                  
                 <div class="card-body">
                     <form id="student_registration_form" >
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div  class="form-group">
-                                    <label for="">Admission Number</label>
-                                    <input type="text" class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div  class="form-group">
-                                    <label for="">Admission Date</label>
-                                    <input type="text" name="admitted_year" id="admitted_year" class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            
-                        </div>
-
                         <p class="text-center"><b>Personal Information</b></p>
                         <hr style=" height: 5px;
                         background-color:#2E9AFE ;
@@ -120,6 +104,13 @@
                                         @endforeach
                                     </select>
                                  </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div  class="form-group">
+                                    <label for="">Admission Date</label>
+                                    <input type="date" name="admitted_year" id="admitted_year" class="form-control form-control-sm">
+                                </div>
                             </div>
 
                             {{-- <div class="col-md-4">

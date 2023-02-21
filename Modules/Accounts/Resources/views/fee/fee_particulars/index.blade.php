@@ -86,7 +86,7 @@
                             <tr>
                                 <td class="space_pad">  Name: </td>
                                 <td> 
-                                    <select name="particular_id" id="particular_id" class="form-control form-control-sm" style="width: 22rem">
+                                    <select data-must="1" name="particular_id" id="particular_id" class="form-control form-control-sm" style="width: 22rem">
                                         <option value=""> Select A Particular</option>
                                         @foreach ($master_particulars as  $particular)
                                             <option value="{{$particular->id}}"> {{  $particular->name }} </option>
@@ -127,7 +127,9 @@
                             <tr>
     
                                 <td class="space_pad">Amount </td>
-                                <td><input name="amount" type="text" class="form-control form-control-sm"></td>
+                                <td>
+                                    <input name="amount" data-must="1" id="amount" type="text" class="form-control form-control-sm">
+                                </td>
     
                             </tr>
                           
@@ -143,7 +145,7 @@
                             <tr>
                                 <td class="space_pad">Select a Category</td>
                                 <td>
-                                    <select style="width: 22rem" name="select_category" id="select_category" class="form-control form-control-sm">
+                                    <select style="width: 22rem" data-must="1" name="select_category" id="select_category" class="form-control form-control-sm">
                                         <option value="">Select a Category</option>
                                         @foreach ($fee_master_categories as $cat )
 
@@ -272,43 +274,69 @@ $('#none').click(function(){
 
     $('#save_header').click(function(){
 
-        let form = $('#structure_form')[0];
-        let form_data = new FormData(form);
-        
-        $.ajax(
-           {
-            processData:false,
-            contentType: false, 
-            url:'{{ route('accounts.school.fee.structure.patcl.category.store')  }}',
-            type:'POST',
-            data:form_data,
-            dataType: "JSON",
-            success:function(response){
-                if(response.state == 'Done'){
-                    toastr.success(response.msg, response.title);
-                    $('#fcategory').modal('hide');
-                    {{-- particulars_table.draw(); --}}
-                }
-                else if(response.state == 'Fail'){
-                    toastr.warning(response.msg, response.title)
+        $category = $('#select_category').val();
+        $particular_id = $('#particular_id').val();
+
+        if($('#amount').val() && $category && $particular_id ){
+
+            let form = $('#structure_form')[0];
+            let form_data = new FormData(form);
+
+            $.ajax(
+                {
+                 processData:false,
+                 contentType: false, 
+                 url:'{{ route('accounts.school.fee.structure.patcl.category.store')  }}',
+                 type:'POST',
+                 data:form_data,
+                 dataType: "JSON",
+                 success:function(response){
+                     if(response.state == 'Done'){
+                         toastr.success(response.msg, response.title);
+                         $('#fcategory').modal('hide');
+                        
+                         let elements = $("#structure_form").find("input, select");
+                            elements.each(function() {
+                                $(this).val('')
+                            });
+
+                     }
+                     else if(response.state == 'Fail'){
+                         toastr.warning(response.msg, response.title)
+                  
+                     }
+                     else if(response.state == 'Error') {
+                         toastr.error(response.msg, response.title);
+                     }
+                  
+                  },
+                  error: function(response){
+                     if(response.status == 500){
+                      toastr.error('Server Error', 'error');
+                     }
              
-                }
-                else if(response.state == 'Error') {
-                    toastr.error(response.msg, response.title);
-                }
+                 }
              
-             },
-             error: function(response){
-                if(response.status == 500){
-                 toastr.error('Server Error', 'error');
+             
+                });
+
+
+        }else{
+
+            let elements = $("#structure_form").find("input, select");
+            elements.each(function() {
+                if ( !$(this).val() && $(this).data('must')) {
+                    $(this).addClass('is-invalid');
                 }
-        
-            }
-        
-        
-           });
-        
+            });
+            {{-- if(!)
+            $('#amount').addClass('is-invalid'); --}}
+
+        }
         })
+
+{{-- $('#select_category').select2({width:'100%'});
+$('#particular_id').select2({width:'100%'}); --}}
 
 
 

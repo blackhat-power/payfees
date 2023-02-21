@@ -3,6 +3,7 @@
 namespace Modules\Registration\Http\Controllers;
 
 use App\Exports\StudentsExport;
+use App\Helpers\Helper;
 use App\Imports\ChochoteImport;
 use App\Imports\StudentImport;
 use App\Models\Account;
@@ -52,8 +53,10 @@ class StudentsRegistrationController extends Controller
     public function registrationPortal(Request $request){
 
         $data['streams'] = AccountSchoolDetailStream::select(['name','id'])->groupBy(['name'])->get(); 
-       $data['classes'] = AccountSchoolDetailClass::select(['name','id'])->groupBy(['name'])->get();   
-     
+       $data['classes'] = AccountSchoolDetailClass::select(['name','id'])->groupBy(['name'])->get(); 
+      $last_student_id = AccountStudentDetail::orderBy('id','DESC')->first()->id;  
+      $helper = new Helper();
+       $data['admission_number'] = $helper->admissionNumber(++$last_student_id);
         $data['activeLink']='student';
         return view('registration::student.registration_wizard')->with($data);
 
@@ -785,6 +788,8 @@ class StudentsRegistrationController extends Controller
 
 
 
+      /* THE NEW STORE */
+
       public function studentWizardStore(Request $request){
 
         try {
@@ -811,7 +816,7 @@ class StudentsRegistrationController extends Controller
                      else{
                         $avatar = 'avatar-woman.png';
                      }
-                   $student_detail =  AccountStudentDetail::updateOrCreate(
+                  $student_detail =  AccountStudentDetail::updateOrCreate(
                         [
                             'id'=>$request->stdnt_id
                         ],
@@ -827,6 +832,7 @@ class StudentsRegistrationController extends Controller
                             'account_school_details_id'=>AccountSchoolDetail::select('account_school_details.*')->first()->id,
                             'account_school_details_class_id'=>$request->students_class,
                             'account_school_detail_stream_id'=>$request->students_stream,
+                            'admission_no'=>$request->admission_number,
                             'profile_pic'=>$avatar
                         ]
                         );
@@ -1070,7 +1076,7 @@ class StudentsRegistrationController extends Controller
         public function queryFeeStructure( Request $req){
 
 $html = '';
-         $fee_masters =  FeeMasterCategory::join('fee_structures','fee_master_categories.id','=','fee_structures.category_id')
+       $fee_masters =  FeeMasterCategory::join('fee_structures','fee_master_categories.id','=','fee_structures.category_id')
        ->select('fee_master_categories.id as the_category_id','fee_master_categories.name as category_name','fee_structures.id as fee_structure_id')
        ->where('class_id',$req->class_id)
           ->groupBy('category_id')->get();
@@ -1085,11 +1091,12 @@ $html = '';
           ->where('class_id',$req->class_id)
           ->groupBy('particular_id')
           ->get();
+       
 
             $html.= '<div class="accordion-container">
             <a href="#" class="accordion-toggle">'.$fee->category_name.'</a>
             <div class="accordion-content">
-            <input type="hidden" name="category_id" value="'.$fee->category_id.'"> 
+            <input type="hidden" name="category_id" value="'.$fee->the_category_id.'"> 
             ';
             foreach($student_fee_items as $key=>$item){
                 $total += $item->amount;
@@ -1126,43 +1133,30 @@ return response($html);
         public function studentFeeStructureStore(Request $request){
 
             try {
-
-
-                return $request->all();
     
                 DB::beginTransaction();
                 $particular_id = $request->particular_id;
-                $student_category = $request->student_category;
-                $category_id = $request->select_category;
-                $description = $request->description;
-                $amount = $request->amount;
-                $response = 1;
-    
-            //     foreach($request->fee_items as $row_index=>$item){
-    
-            //       $students =  AccountSchoolDetailClass::find($class)->students;
-    
-            //         // return $students;
-            //         foreach ($students as $key => $student) {
-    
-            //         $response = FeeStructure::updateOrCreate(
-            //             [
-            //                 'id' => $request->fee_structure_id
-            //             ],
-            //             [
-            //                 'category_id'=>$category_id,
-            //                 'amount'=>$amount,
-            //                 'created_by'=>auth()->user()->id,
-            //                 'category_type'=>$student_category,
-            //                 'class_id'=>$class,
-            //                 'particular_id'=>$particular_id,
-            //                 'description'=>$description,
-            //                 'student_id'=>$student->id 
-            //             ]
-            //             );
-    
-            //         }
-            // }
+            $student_category =  AccountStudentDetail::find($request->student_id )->category;
+                $category_id = $request->category_id;
+
+                foreach ($request->amount as $key => $amount) {
+                   
+                    $response = FeeStructure::updateOrCreate(
+                        [
+                            'id' => $request->fee_structure_id
+                        ],
+                        [
+                            'category_id'=>$category_id,
+                            'amount'=>$amount,
+                            'created_by'=>auth()->user()->id,
+                            'category_type'=>$student_category,
+                            'class_id'=>$request->class_id,
+                            'particular_id'=>$request->particular_ids[$key],
+                            'student_id'=>$request->student_id 
+                        ]
+            );
+                }
+
                 DB::commit();
                 if ($response) {
     

@@ -71,8 +71,13 @@
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 10px;
+}
 
-
+/* .modal-title{
+  color: #ffff !important;
+} */
+.modal-header{
+  background-color:#04476a;
 }
 
 .loader_gif{
@@ -323,7 +328,7 @@ table.dataTable tfoot th {
 @yield('alerts-ground')
 
 @yield('content-breadcrumbs')
-
+<div style="margin-top: -1.7%; width:100%" >
 @yield('content-heading')
      {{--Error Alert Area--}}
      @if($errors->any())
@@ -336,6 +341,7 @@ table.dataTable tfoot th {
 
      </div>
  @endif
+</div>
 
  <div id="ajax-alert" style="display: none"></div>
 
